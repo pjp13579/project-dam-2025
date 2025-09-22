@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"target": "ES2021",
+		"module": "commonjs",
+		"lib": [
+			"ES2021"
+		],
+		"outDir": "./dist",
+		"rootDir": "",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"resolveJsonModule": true,
+		"typeRoots": [
+			"./node_modules/@types",
+			"./src/types"
+		]
+	},
+	"include": [
+		"src/**/*",
+		"server.ts",
+		"generateBcryptHash.js"
+	],
+	"exclude": [
+		"node_modules",
+		"dist"
+	]
+}
