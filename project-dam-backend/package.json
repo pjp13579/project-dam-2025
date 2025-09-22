@@ -7,8 +7,7 @@
 		"dev": "nodemon --exec \"npm run build && node dist/src/server.js\"",
 		"build": "tsoa spec-and-routes && tsc",
 		"build:dev": "tsc --watch",
-		"tsoa:routes": "tsoa spec-and-routes",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"tsoa:routes": "tsoa spec-and-routes"
 	},
 	"keywords": [],
 	"author": "",
