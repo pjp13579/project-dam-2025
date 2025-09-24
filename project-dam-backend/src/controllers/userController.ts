@@ -29,6 +29,12 @@ interface UpdateUserRequest {
 	isActive?: boolean;
 }
 
+interface GetUser {
+	email: string;
+	name: string;
+	role: string;
+}
+
 @Route('users')
 @Tags('Users')
 @Security('jwt')
@@ -40,7 +46,7 @@ export class UserController extends Controller {
 	public async getUsers(
 		@Query() page: number = 1,
 		@Query() limit: number = 10
-	): Promise<{ users: IUser[]; total: number; pages: number; }> {
+	): Promise<{ users: GetUser[]; total: number; pages: number; }> {
 		const skip = (page - 1) * limit;
 		const users = await User.find()
 			.select('-password')
@@ -50,8 +56,15 @@ export class UserController extends Controller {
 
 		const total = await User.countDocuments();
 
+		// Map IUser objects to GetUser DTO
+		const userDtos: GetUser[] = users.map(user => ({
+			email: user.email,
+			name: user.name,
+			role: user.role
+		}));
+
 		return {
-			users,
+			users: userDtos,
 			total,
 			pages: Math.ceil(total / limit)
 		};
@@ -61,7 +74,7 @@ export class UserController extends Controller {
 	 * Get current user profile
 	 */
 	@Get('profile')
-	public async getProfile(@Request() req: AuthenticatedRequest): Promise<IUser> {
+	public async getProfile(@Request() req: AuthenticatedRequest): Promise<GetUser> {
 		if (!req.user) {
 			throw new Error('User not found');
 		}
@@ -71,20 +84,29 @@ export class UserController extends Controller {
 			throw new Error('User not found');
 		}
 
-		return user;
+		return {
+			"email": user.email,
+			"name": user.name,
+			"role": user.role
+		};
+		
 	}
 
 	/**
 	 * Get user by ID
 	 */
 	@Get('{userId}')
-	public async getUser(@Path() userId: string): Promise<IUser> {
+	public async getUser(@Path() userId: string): Promise<GetUser> {
 		const user = await User.findById(userId).select('-password');
 		if (!user) {
 			throw new Error('User not found');
 		}
 
-		return user;
+		return {
+			"email": user.email,
+			"name": user.name,
+			"role": user.role
+		};
 	}
 
 	/**

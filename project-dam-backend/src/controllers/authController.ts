@@ -18,9 +18,7 @@ interface LoginRequest {
 interface LoginResponse {
 	token: string;
 	user: {
-		id: string;
 		name: string;
-		email: string;
 		role: string;
 	};
 }
@@ -69,9 +67,7 @@ export class AuthController extends Controller {
 		return {
 			token,
 			user: {
-				id: user.id,
 				name: user.name,
-				email: user.email,
 				role: user.role
 			}
 		};
