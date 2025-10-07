@@ -4,29 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigation.findNavController
 import com.ipt2025.project_dam.data.LoginRepository
 import com.ipt2025.project_dam.data.Result
 
 import com.ipt2025.project_dam.R
+import kotlinx.coroutines.launch
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+    val navigateToHome = MutableLiveData<Boolean>()
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
-
     fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        viewModelScope.launch {
+            // can be launched in a separate asynchronous job
+            val result = loginRepository.login(username, password)
 
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
+            if (result is Result.Success) {
+                _loginResult.value =
+                    LoginResult(success = LoggedInUserView(displayName = result.data.user.name))
+                navigateToHome.value = true
+            } else {
+                _loginResult.value = LoginResult(error = R.string.login_failed)
+            }
         }
+
     }
 
     fun loginDataChanged(username: String, password: String) {
@@ -37,6 +44,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         } else {
             _loginForm.value = LoginFormState(isDataValid = true)
         }
+    }
+
+    fun doneNavigating() {
+        navigateToHome.value = false
     }
 
     // A placeholder username validation check

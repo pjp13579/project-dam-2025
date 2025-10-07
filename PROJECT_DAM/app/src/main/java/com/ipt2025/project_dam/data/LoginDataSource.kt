@@ -1,6 +1,11 @@
 package com.ipt2025.project_dam.data
 
-import com.ipt2025.project_dam.data.model.LoggedInUser
+import com.ipt2025.project_dam.BuildConfig
+import com.ipt2025.project_dam.data.api.LoginAPIService
+import com.ipt2025.project_dam.data.api.UserLoginRequest
+import com.ipt2025.project_dam.data.api.UserLoginResponse
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 /**
@@ -8,11 +13,17 @@ import java.io.IOException
  */
 class LoginDataSource {
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    suspend fun login(username: String, password: String): Result<UserLoginResponse> {
         try {
-            // TODO: handle loggedInUser authentication
-            val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-            return Result.Success(fakeUser)
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL) // Replace with your base URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val apiService = retrofit.create(LoginAPIService::class.java)
+            val request = UserLoginRequest(username, password)
+            val result = apiService.loginUser(request)
+            return Result.Success(result)
         } catch (e: Throwable) {
             return Result.Error(IOException("Error logging in", e))
         }

@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.databinding.FragmentLoginBinding
 
 import com.ipt2025.project_dam.R
@@ -49,6 +50,20 @@ class LoginFragment : Fragment() {
         val loginButton = binding.login
         val loadingProgressBar = binding.loading
 
+        // Assume you have initialized your ViewModel, e.g., using by viewModels()
+        // loginViewModel = ...
+
+        // Observe the navigation signal from the ViewModel
+        loginViewModel.navigateToHome.observe(viewLifecycleOwner, Observer { shouldNavigate ->
+            if (shouldNavigate) {
+                // Navigate to the next fragment (e.g., HomeFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_dashboard)
+
+                // IMPORTANT: Reset the event flag in the ViewModel to prevent
+                // navigation from re-triggering (e.g., on config change/rotation)
+                loginViewModel.doneNavigating()
+            }
+        })
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
             Observer { loginFormState ->
                 if (loginFormState == null) {
