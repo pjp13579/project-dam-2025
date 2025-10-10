@@ -18,6 +18,16 @@ const auth_1 = require("./../src/middleware/auth");
 const expressAuthenticationRecasted = auth_1.expressAuthentication;
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const models = {
+    "GetUser": {
+        "dataType": "refObject",
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "name": { "dataType": "string", "required": true },
+            "role": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "mongoose.Types.ObjectId": {
         "dataType": "refAlias",
         "type": { "dataType": "string", "validators": {} },
@@ -96,6 +106,7 @@ const models = {
             "type": { "dataType": "string", "required": true },
             "country": { "dataType": "string", "required": true },
             "address": { "dataType": "nestedObjectLiteral", "nestedProperties": { "longitude": { "dataType": "double", "required": true }, "latitude": { "dataType": "double", "required": true }, "zipCode": { "dataType": "string", "required": true }, "state": { "dataType": "string", "required": true }, "city": { "dataType": "string", "required": true }, "street": { "dataType": "string", "required": true } }, "required": true },
+            "devicesAtSite": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
             "isActive": { "dataType": "boolean" },
         },
         "additionalProperties": false,
@@ -243,7 +254,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "token": { "dataType": "string", "required": true },
-            "user": { "dataType": "nestedObjectLiteral", "nestedProperties": { "role": { "dataType": "string", "required": true }, "email": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } }, "required": true },
+            "user": { "dataType": "nestedObjectLiteral", "nestedProperties": { "role": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true } }, "required": true },
         },
         "additionalProperties": false,
     },

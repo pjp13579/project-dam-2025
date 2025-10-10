@@ -114,7 +114,12 @@ export class IpController extends Controller {
 	@Delete('{ipId}')
 	@Security('jwt', ['admin'])
 	public async deleteIp(@Path() ipId: string): Promise<{ message: string; }> {
-		const ip = await Ip.findByIdAndDelete(ipId);
+		const ip = await Ip.findByIdAndUpdate(
+			ipId,
+			{isActive: false},
+			{ new: true, runValidators: true }
+		);
+		// const ip = await Ip.findByIdAndDelete(ipId)
 		if (!ip) {
 			throw new Error('IP not found');
 		}

@@ -36,7 +36,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/server.ts
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
@@ -45,19 +44,19 @@ const routes_1 = require("./dist/routes");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const errorHandler_1 = require("./src/middleware/errorHandler");
 const auth_1 = require("./src/middleware/auth");
-// Load environment variables
+// load .env
 dotenv_1.default.config();
-// Create Express app
+// create and config express app
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
-// Middleware
+// middleware
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-// Serve Swagger UI
+// serve swagger ui
 app.use('/docs', swagger_ui_express_1.default.serve, async (_req, res) => {
     return res.send(swagger_ui_express_1.default.generateHTML(await Promise.resolve().then(() => __importStar(require('./dist/swagger.json'))))); // "resolveJsonModule": true
 });
-// Apply auth middleware to all routes except auth and docs
+// apply auth middleware to all routes except auth and docs
 app.use((req, res, next) => {
     if (req.path === '/auth/login' || req.path.startsWith('/docs')) {
         return next();
@@ -72,15 +71,18 @@ app.use((req, res, next) => {
         res.status(401).json({ message: err.message });
     });
 });
-// Register tsoa routes
+// register tsoa routes
 (0, routes_1.RegisterRoutes)(app);
-// Error handling middleware
+// error handling middleware
 app.use(errorHandler_1.errorHandler);
-// MongoDB connection
-mongoose_1.default.connect(process.env.MONGODB_URI)
+console.log("Connecting to MongoDB...");
+console.log("proc ess.env.MONGODB_URI: " + process.env.MONGODB_URI);
+console.log("proc ess.env.MONGODB_URI as string: " + process.env.MONGODB_URI);
+// mongoDB connection
+mongoose_1.default.connect("mongodb+srv://rgCras:imagensbase64!@dam20251.global.mongocluster.cosmos.azure.com/dam?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000")
     .then(() => console.log('MongoDB connected successfully'))
     .catch(err => console.error('MongoDB connection error:', err));
-// Start server
+// start server
 app.listen(PORT, () => {
     console.log(`CacoRedes API server is running on port ${PORT}`);
     console.log(`API documentation available at http://localhost:${PORT}/docs`);

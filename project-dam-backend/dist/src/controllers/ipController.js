@@ -70,7 +70,8 @@ let IpController = class IpController extends tsoa_1.Controller {
         }
     }
     async deleteIp(ipId) {
-        const ip = await ip_1.Ip.findByIdAndDelete(ipId);
+        const ip = await ip_1.Ip.findByIdAndUpdate(ipId, { isActive: false }, { new: true, runValidators: true });
+        // const ip = await Ip.findByIdAndDelete(ipId)
         if (!ip) {
             throw new Error('IP not found');
         }

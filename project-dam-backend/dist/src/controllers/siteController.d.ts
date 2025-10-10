@@ -12,6 +12,7 @@ interface CreateSiteRequest {
         latitude: number;
         longitude: number;
     };
+    devicesAtSite: string[];
     isActive?: boolean;
 }
 interface UpdateSiteRequest {

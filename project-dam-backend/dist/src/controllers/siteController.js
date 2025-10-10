@@ -70,7 +70,8 @@ let SiteController = class SiteController extends tsoa_1.Controller {
         }
     }
     async deleteSite(siteId) {
-        const site = await site_1.Site.findByIdAndDelete(siteId);
+        const site = await site_1.Site.findByIdAndUpdate(siteId, { isActive: false }, { new: true, runValidators: true });
+        // const site = await Site.findBy
         if (!site) {
             throw new Error('Site not found');
         }

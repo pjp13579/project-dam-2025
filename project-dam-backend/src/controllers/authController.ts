@@ -8,7 +8,6 @@ import {
 } from 'tsoa';
 import { User, IUser } from '../models/user';
 import jwt from 'jsonwebtoken';
-import { Console } from 'console';
 
 interface LoginRequest {
 	email: string;

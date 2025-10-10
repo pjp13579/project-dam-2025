@@ -13,23 +13,28 @@ interface UpdateUserRequest {
     role?: 'guest' | 'technician' | 'admin';
     isActive?: boolean;
 }
+interface GetUser {
+    email: string;
+    name: string;
+    role: string;
+}
 export declare class UserController extends Controller {
     /**
      * Get all users (Admin only)
      */
     getUsers(page?: number, limit?: number): Promise<{
-        users: IUser[];
+        users: GetUser[];
         total: number;
         pages: number;
     }>;
     /**
      * Get current user profile
      */
-    getProfile(req: AuthenticatedRequest): Promise<IUser>;
+    getProfile(req: AuthenticatedRequest): Promise<GetUser>;
     /**
      * Get user by ID
      */
-    getUser(userId: string): Promise<IUser>;
+    getUser(userId: string): Promise<GetUser>;
     /**
      * Create a new user (Admin only)
      */

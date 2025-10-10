@@ -127,7 +127,11 @@ export class DeviceController extends Controller {
 	@Delete('{deviceId}')
 	@Security('jwt', ['admin'])
 	public async deleteDevice(@Path() deviceId: string): Promise<{ message: string; }> {
-		const device = await Device.findByIdAndDelete(deviceId);
+		const device = await Device.findByIdAndUpdate(
+			deviceId,
+			{ isActive: false },
+			{ new: true, runValidators: true }
+		);
 		if (!device) {
 			throw new Error('Device not found');
 		}

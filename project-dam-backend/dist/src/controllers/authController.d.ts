@@ -6,9 +6,7 @@ interface LoginRequest {
 interface LoginResponse {
     token: string;
     user: {
-        id: string;
         name: string;
-        email: string;
         role: string;
     };
 }
@@ -20,11 +18,11 @@ interface RegisterRequest {
 }
 export declare class AuthController extends Controller {
     /**
-     * Login to the system
+     * obtain JWT token
      */
     login(requestBody: LoginRequest): Promise<LoginResponse>;
     /**
-     * Register a new user (admin only)
+     * register users
      */
     register(requestBody: RegisterRequest): Promise<{
         message: string;

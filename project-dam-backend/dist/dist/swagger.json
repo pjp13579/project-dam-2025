@@ -7,6 +7,26 @@
         "requestBodies": {},
         "responses": {},
         "schemas": {
+            "GetUser": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "name",
+                    "role"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
             "mongoose.Types.ObjectId": {
                 "type": "string"
             },
@@ -236,6 +256,12 @@
                         ],
                         "type": "object"
                     },
+                    "devicesAtSite": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
                     "isActive": {
                         "type": "boolean"
                     }
@@ -244,7 +270,8 @@
                     "localName",
                     "type",
                     "country",
-                    "address"
+                    "address",
+                    "devicesAtSite"
                 ],
                 "type": "object",
                 "additionalProperties": false
@@ -743,21 +770,13 @@
                             "role": {
                                 "type": "string"
                             },
-                            "email": {
-                                "type": "string"
-                            },
                             "name": {
-                                "type": "string"
-                            },
-                            "id": {
                                 "type": "string"
                             }
                         },
                         "required": [
                             "role",
-                            "email",
-                            "name",
-                            "id"
+                            "name"
                         ],
                         "type": "object"
                     }
@@ -851,7 +870,7 @@
                                         },
                                         "users": {
                                             "items": {
-                                                "$ref": "#/components/schemas/IUser"
+                                                "$ref": "#/components/schemas/GetUser"
                                             },
                                             "type": "array"
                                         }
@@ -946,7 +965,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/IUser"
+                                    "$ref": "#/components/schemas/GetUser"
                                 }
                             }
                         }
@@ -973,7 +992,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/IUser"
+                                    "$ref": "#/components/schemas/GetUser"
                                 }
                             }
                         }
@@ -2013,7 +2032,7 @@
                         }
                     }
                 },
-                "description": "Login to the system",
+                "description": "obtain JWT token",
                 "tags": [
                     "Authentication"
                 ],
@@ -2058,7 +2077,7 @@
                         }
                     }
                 },
-                "description": "Register a new user (admin only)",
+                "description": "register users",
                 "tags": [
                     "Authentication"
                 ],

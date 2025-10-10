@@ -142,7 +142,12 @@ export class CableController extends Controller {
 	@Delete('{cableId}')
 	@Security('jwt', ['admin'])
 	public async deleteCable(@Path() cableId: string): Promise<{ message: string; }> {
-		const cable = await Cable.findByIdAndDelete(cableId);
+		const cable = await Cable.findByIdAndUpdate(
+			cableId,
+			{isActive: false},
+			{ new: true, runValidators: true }
+		);
+
 		if (!cable) {
 			throw new Error('Cable not found');
 		}

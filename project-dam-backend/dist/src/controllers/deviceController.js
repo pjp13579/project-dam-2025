@@ -77,7 +77,7 @@ let DeviceController = class DeviceController extends tsoa_1.Controller {
         }
     }
     async deleteDevice(deviceId) {
-        const device = await device_1.Device.findByIdAndDelete(deviceId);
+        const device = await device_1.Device.findByIdAndUpdate(deviceId, { isActive: false }, { new: true, runValidators: true });
         if (!device) {
             throw new Error('Device not found');
         }

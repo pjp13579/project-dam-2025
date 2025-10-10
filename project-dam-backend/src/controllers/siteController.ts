@@ -127,7 +127,12 @@ export class SiteController extends Controller {
 	@Delete('{siteId}')
 	@Security('jwt', ['admin'])
 	public async deleteSite(@Path() siteId: string): Promise<{ message: string; }> {
-		const site = await Site.findByIdAndDelete(siteId);
+		const site = await Site.findByIdAndUpdate(
+			siteId,
+			{ isActive: false },
+			{ new: true, runValidators: true }
+		);
+		// const site = await Site.findBy
 		if (!site) {
 			throw new Error('Site not found');
 		}
