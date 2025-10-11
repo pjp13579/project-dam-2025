@@ -21,45 +21,38 @@ const user_1 = require("../models/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let AuthController = class AuthController extends tsoa_1.Controller {
     /**
-     * Login to the system
+     * obtain JWT token
      */
     async login(requestBody) {
         const { email, password } = requestBody;
-        // Check if user exists
         const user = await user_1.User.findOne({ email, isActive: true });
         if (!user) {
             throw new Error('Invalid credentials');
         }
         console.log(user);
-        // Check password
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             console.log("Password does not match");
             throw new Error('Invalid credentials');
         }
-        // Create token
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "24h" });
         return {
             token,
             user: {
-                id: user.id,
                 name: user.name,
-                email: user.email,
                 role: user.role
             }
         };
     }
     /**
-     * Register a new user (admin only)
+     * register users
      */
     async register(requestBody) {
         try {
-            // Check if user already exists
             const existingUser = await user_1.User.findOne({ email: requestBody.email });
             if (existingUser) {
                 throw new Error('User already exists with this email');
             }
-            // Create new user
             const user = new user_1.User(requestBody);
             await user.save();
             this.setStatus(201);

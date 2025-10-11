@@ -80,7 +80,7 @@ let CableController = class CableController extends tsoa_1.Controller {
         }
     }
     async deleteCable(cableId) {
-        const cable = await cable_1.Cable.findByIdAndDelete(cableId);
+        const cable = await cable_1.Cable.findByIdAndUpdate(cableId, { isActive: false }, { new: true, runValidators: true });
         if (!cable) {
             throw new Error('Cable not found');
         }

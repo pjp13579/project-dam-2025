@@ -172,7 +172,11 @@ export class UserController extends Controller {
 	@Delete('{userId}')
 	@Security('jwt', ['admin'])
 	public async deleteUser(@Path() userId: string): Promise<{ message: string; }> {
-		const user = await User.findByIdAndDelete(userId);
+		const user = await User.findByIdAndUpdate(
+			userId,
+			{ isActive: false },
+			{ new: true, runValidators: true }
+		);
 
 		if (!user) {
 			throw new Error('User not found');

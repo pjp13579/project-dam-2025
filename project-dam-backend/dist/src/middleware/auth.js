@@ -7,12 +7,13 @@ exports.requireRole = void 0;
 exports.expressAuthentication = expressAuthentication;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_1 = require("../models/user");
-// Add this to your auth.ts file
+// auth middleware
+// verifies JWT token and attaches user to request
 async function expressAuthentication(request, securityName, scopes) {
     if (securityName !== 'jwt') {
         throw new Error('Unsupported security name');
     }
-    // Authenticate using your existing logic
+    // authenticate using your existing logic
     const token = request.header('Authorization')?.replace('Bearer ', '');
     if (!token) {
         throw new Error('Access denied. No token provided.');
@@ -22,7 +23,7 @@ async function expressAuthentication(request, securityName, scopes) {
     if (!user) {
         throw new Error('Token is not valid.');
     }
-    // Check scopes if provided
+    // check scopes if provided
     if (scopes && scopes.length > 0) {
         if (!scopes.includes(user.role)) {
             throw new Error('Access denied. Insufficient permissions.');

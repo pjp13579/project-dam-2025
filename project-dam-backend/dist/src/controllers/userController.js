@@ -27,8 +27,14 @@ let UserController = class UserController extends tsoa_1.Controller {
             .limit(limit)
             .sort({ createdAt: -1 });
         const total = await user_1.User.countDocuments();
+        // Map IUser objects to GetUser DTO
+        const userDtos = users.map(user => ({
+            email: user.email,
+            name: user.name,
+            role: user.role
+        }));
         return {
-            users,
+            users: userDtos,
             total,
             pages: Math.ceil(total / limit)
         };
@@ -44,7 +50,11 @@ let UserController = class UserController extends tsoa_1.Controller {
         if (!user) {
             throw new Error('User not found');
         }
-        return user;
+        return {
+            "email": user.email,
+            "name": user.name,
+            "role": user.role
+        };
     }
     /**
      * Get user by ID
@@ -54,7 +64,11 @@ let UserController = class UserController extends tsoa_1.Controller {
         if (!user) {
             throw new Error('User not found');
         }
-        return user;
+        return {
+            "email": user.email,
+            "name": user.name,
+            "role": user.role
+        };
     }
     /**
      * Create a new user (Admin only)
@@ -101,7 +115,7 @@ let UserController = class UserController extends tsoa_1.Controller {
      * Delete user (Admin only)
      */
     async deleteUser(userId) {
-        const user = await user_1.User.findByIdAndDelete(userId);
+        const user = await user_1.User.findByIdAndUpdate(userId, { isActive: false }, { new: true, runValidators: true });
         if (!user) {
             throw new Error('User not found');
         }
