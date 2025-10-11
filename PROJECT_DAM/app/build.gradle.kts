@@ -56,4 +56,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
+
+
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0") // qr-code dependency
 }

@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/dashboard"
-        android:name="com.ipt2025.project_dam.Dashboard"
+        android:name="com.ipt2025.project_dam.ui.login.LoggedInUserView"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 </navigation>
