@@ -11,14 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.databinding.FragmentLoginBinding
 
 import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.ui.qrcode.QRCodeView
 
 class LoginFragment : Fragment() {
 
@@ -86,7 +84,7 @@ class LoginFragment : Fragment() {
                     showLoginFailed(it)
                 }
                 loginResult.success?.let {
-                    updateUiWithUser(it)
+                    updateUIWithUser(it)
                 }
             })
 
@@ -127,7 +125,7 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUIWithUser(model: QRCodeView) {
         val welcome = getString(R.string.welcome)
         // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return

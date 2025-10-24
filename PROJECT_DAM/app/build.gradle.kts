@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.ipt2025.project_dam"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ipt2025.project_dam"
@@ -50,13 +50,14 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
-
-
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0") // qr-code dependency
+    implementation(libs.zxing.android.embedded) // qr-code dependency
 }

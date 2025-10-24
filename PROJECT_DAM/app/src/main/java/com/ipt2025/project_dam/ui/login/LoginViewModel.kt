@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.Navigation.findNavController
 import com.ipt2025.project_dam.data.LoginRepository
 import com.ipt2025.project_dam.data.Result
 
 import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.ui.qrcode.QRCodeView
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
@@ -27,7 +27,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
             if (result is Result.Success) {
                 _loginResult.value =
-                    LoginResult(success = LoggedInUserView())
+                    LoginResult(success = QRCodeView())
                 navigateToHome.value = true
             } else {
                 _loginResult.value = LoginResult(error = R.string.login_failed)

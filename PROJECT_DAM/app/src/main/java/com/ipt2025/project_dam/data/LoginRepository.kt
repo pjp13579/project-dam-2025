@@ -1,6 +1,8 @@
 package com.ipt2025.project_dam.data
 
+import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.UserLoginResponse
+import retrofit2.Retrofit
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -31,8 +33,6 @@ class LoginRepository(val dataSource: LoginDataSource) {
         // handle login
         val result = dataSource.login(username, password)
 
-        System.out.println(result);
-
         if (result is Result.Success) {
             setLoggedInUser(result.data)
         }
@@ -42,7 +42,6 @@ class LoginRepository(val dataSource: LoginDataSource) {
 
     private fun setLoggedInUser(loggedInUser: UserLoginResponse) {
         this.user = loggedInUser
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
+        RetrofitProvider.updateToken(loggedInUser.token);
     }
 }

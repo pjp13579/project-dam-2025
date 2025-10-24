@@ -1,10 +1,9 @@
-package com.ipt2025.project_dam.ui.login
+package com.ipt2025.project_dam.ui.qrcode
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -19,7 +18,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 /**
  * User details post authentication that is exposed to the UI
  */
-class LoggedInUserView : Fragment() {
+class QRCodeView : Fragment() {
 
     private lateinit var text: TextView
     private lateinit var button: Button
@@ -28,7 +27,7 @@ class LoggedInUserView : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        val view = inflater.inflate(R.layout.fragment_qrcode, container, false)
 
         text = view.findViewById(R.id.text)
         button = view.findViewById(R.id.button)

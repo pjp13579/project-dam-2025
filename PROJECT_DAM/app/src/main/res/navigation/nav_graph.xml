@@ -17,7 +17,29 @@
     </fragment>
     <fragment
         android:id="@+id/dashboard"
-        android:name="com.ipt2025.project_dam.ui.login.LoggedInUserView"
+        android:name="com.ipt2025.project_dam.Dashboard"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_dashboard_to_siteFragment"
+            app:destination="@id/siteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteFragment"
+        android:name="com.ipt2025.project_dam.ui.site.SiteFragment"
+        android:label="fragment_site_list"
+        tools:layout="@layout/fragment_site_list" >
+        <action
+            android:id="@+id/action_siteFragment_to_siteDetailsFragment"
+            app:destination="@id/siteDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteDetailsFragment"
+        android:name="com.ipt2025.project_dam.ui.site.SiteDetailsFragment"
+        android:label="fragment_site_details"
+        tools:layout="@layout/fragment_site_details" >
+        <argument
+            android:name="_id"
+            app:argType="string"/>
+    </fragment>
 </navigation>

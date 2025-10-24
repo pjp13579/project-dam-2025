@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,7 +20,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class Dashboard : Fragment() {
-    // TODO: Rename and change types of parameters
+    private lateinit var siteButton : Button
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -34,7 +38,15 @@ class Dashboard : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+        var view = inflater.inflate(R.layout.fragment_dashboard, container, false)
+
+        siteButton = view.findViewById(R.id.site_list_button)
+
+        siteButton.setOnClickListener {
+            findNavController().navigate(R.id.action_dashboard_to_siteFragment)
+        }
+
+        return view;
     }
 
     companion object {
