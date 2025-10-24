@@ -129,6 +129,67 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetSitesRequest": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"localName": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"address": {
+						"properties": {
+							"longitude": {
+								"type": "number",
+								"format": "double"
+							},
+							"latitude": {
+								"type": "number",
+								"format": "double"
+							},
+							"zipCode": {
+								"type": "string"
+							},
+							"state": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							},
+							"street": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"longitude",
+							"latitude",
+							"zipCode",
+							"state",
+							"city",
+							"street"
+						],
+						"type": "object"
+					},
+					"isActive": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"_id",
+					"localName",
+					"type",
+					"country",
+					"address"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"IAddress": {
 				"properties": {
 					"street": {
@@ -1129,7 +1190,7 @@
 										},
 										"sites": {
 											"items": {
-												"$ref": "#/components/schemas/ISite"
+												"$ref": "#/components/schemas/GetSitesRequest"
 											},
 											"type": "array"
 										}

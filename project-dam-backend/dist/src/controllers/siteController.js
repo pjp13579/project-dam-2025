@@ -22,11 +22,26 @@ let SiteController = class SiteController extends tsoa_1.Controller {
         const sites = await site_1.Site.find()
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
-            .populate('devicesAtSite');
+            .sort({ createdAt: -1 });
         const total = await site_1.Site.countDocuments();
+        // Map IUser objects to GetUser DTO
+        const getSitesDto = sites.map(site => ({
+            _id: site._id.toString(),
+            localName: site.localName,
+            type: site.type,
+            country: site.country,
+            address: {
+                street: site.address.street,
+                city: site.address.city,
+                state: site.address.state,
+                zipCode: site.address.zipCode,
+                latitude: site.address.latitude,
+                longitude: site.address.longitude,
+            },
+            isActive: site.isActive,
+        }));
         return {
-            sites,
+            sites: getSitesDto,
             total,
             pages: Math.ceil(total / limit)
         };
