@@ -26,6 +26,7 @@ let SiteController = class SiteController extends tsoa_1.Controller {
         const total = await site_1.Site.countDocuments();
         // Map IUser objects to GetUser DTO
         const getSitesDto = sites.map(site => ({
+            _id: site._id.toString(),
             localName: site.localName,
             type: site.type,
             country: site.country,

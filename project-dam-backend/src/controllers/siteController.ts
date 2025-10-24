@@ -15,6 +15,7 @@ import {
 import { Site, ISite } from '../models/site';
 
 interface GetSitesRequest {
+	_id: string;
 	localName: string;
 	type: string;
 	country: string;
@@ -81,6 +82,7 @@ export class SiteController extends Controller {
 
 		// Map IUser objects to GetUser DTO
 		const getSitesDto: GetSitesRequest[] = sites.map(site => ({
+			_id: site._id.toString(),
 			localName: site.localName,
 			type: site.type,
 			country: site.country,

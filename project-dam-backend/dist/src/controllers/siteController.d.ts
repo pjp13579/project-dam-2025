@@ -1,6 +1,7 @@
 import { Controller } from 'tsoa';
 import { ISite } from '../models/site';
 interface GetSitesRequest {
+    _id: string;
     localName: string;
     type: string;
     country: string;

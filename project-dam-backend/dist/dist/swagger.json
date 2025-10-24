@@ -131,6 +131,9 @@
             },
             "GetSitesRequest": {
                 "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
                     "localName": {
                         "type": "string"
                     },
@@ -178,6 +181,7 @@
                     }
                 },
                 "required": [
+                    "_id",
                     "localName",
                     "type",
                     "country",

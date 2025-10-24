@@ -73,6 +73,7 @@ const models = {
     "GetSitesRequest": {
         "dataType": "refObject",
         "properties": {
+            "_id": { "dataType": "string", "required": true },
             "localName": { "dataType": "string", "required": true },
             "type": { "dataType": "string", "required": true },
             "country": { "dataType": "string", "required": true },
