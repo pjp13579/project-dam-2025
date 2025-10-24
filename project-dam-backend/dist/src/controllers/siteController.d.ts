@@ -1,5 +1,19 @@
 import { Controller } from 'tsoa';
 import { ISite } from '../models/site';
+interface GetSitesRequest {
+    localName: string;
+    type: string;
+    country: string;
+    address: {
+        street: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        latitude: number;
+        longitude: number;
+    };
+    isActive?: boolean;
+}
 interface CreateSiteRequest {
     localName: string;
     type: string;
@@ -31,7 +45,7 @@ interface UpdateSiteRequest {
 }
 export declare class SiteController extends Controller {
     getSites(page?: number, limit?: number): Promise<{
-        sites: ISite[];
+        sites: GetSitesRequest[];
         total: number;
         pages: number;
     }>;

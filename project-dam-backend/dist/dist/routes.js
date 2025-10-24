@@ -70,6 +70,18 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetSitesRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "localName": { "dataType": "string", "required": true },
+            "type": { "dataType": "string", "required": true },
+            "country": { "dataType": "string", "required": true },
+            "address": { "dataType": "nestedObjectLiteral", "nestedProperties": { "longitude": { "dataType": "double", "required": true }, "latitude": { "dataType": "double", "required": true }, "zipCode": { "dataType": "string", "required": true }, "state": { "dataType": "string", "required": true }, "city": { "dataType": "string", "required": true }, "street": { "dataType": "string", "required": true } }, "required": true },
+            "isActive": { "dataType": "boolean" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IAddress": {
         "dataType": "refObject",
         "properties": {

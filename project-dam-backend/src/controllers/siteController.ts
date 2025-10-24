@@ -14,6 +14,21 @@ import {
 } from 'tsoa';
 import { Site, ISite } from '../models/site';
 
+interface GetSitesRequest {
+	localName: string;
+	type: string;
+	country: string;
+	address: {
+		street: string;
+		city: string;
+		state: string;
+		zipCode: string;
+		latitude: number;
+		longitude: number;
+	};
+	isActive?: boolean;
+}
+
 interface CreateSiteRequest {
 	localName: string;
 	type: string;
@@ -53,18 +68,35 @@ export class SiteController extends Controller {
 	public async getSites(
 		@Query() page: number = 1,
 		@Query() limit: number = 10
-	): Promise<{ sites: ISite[]; total: number; pages: number; }> {
+	): Promise<{ sites: GetSitesRequest[]; total: number; pages: number; }> {
 		const skip = (page - 1) * limit;
 		const sites = await Site.find()
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 })
-			.populate('devicesAtSite');
+			//.populate('devicesAtSite')
+			;
 
 		const total = await Site.countDocuments();
 
+		// Map IUser objects to GetUser DTO
+		const getSitesDto: GetSitesRequest[] = sites.map(site => ({
+			localName: site.localName,
+			type: site.type,
+			country: site.country,
+			address: {
+				street: site.address.street,
+				city: site.address.city,
+				state: site.address.state,
+				zipCode: site.address.zipCode,
+				latitude: site.address.latitude,
+				longitude: site.address.longitude,
+			},
+			isActive: site.isActive,
+		}));
+
 		return {
-			sites,
+			sites: getSitesDto,
 			total,
 			pages: Math.ceil(total / limit)
 		};
