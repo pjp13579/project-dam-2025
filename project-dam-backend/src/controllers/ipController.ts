@@ -14,6 +14,23 @@ import {
 } from 'tsoa';
 import { Ip, IIp } from '../models/ip';
 
+interface GetIpRequest {
+	_id: string;
+	ip: string;
+	mask: number;
+	type: string;
+	logicalEntity: string;
+	isActive?: boolean;
+	devices?: {
+		_id: string;
+		vendor: string;
+		category: string;
+		type: string;
+		serialNumber: string;
+		macAddress: string;
+		state: string;
+	};
+}
 interface CreateIpRequest {
 	ip: string;
 	mask: number;
@@ -46,9 +63,11 @@ export class IpController extends Controller {
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 })
-			.populate('devices');
+			.populate('devices', "_id vendor category type serialNumber macAddress state")
+			;
 
 		const total = await Ip.countDocuments();
+
 
 		return {
 			ips,
@@ -59,12 +78,13 @@ export class IpController extends Controller {
 
 	@Get('{ipId}')
 	public async getIp(@Path() ipId: string): Promise<IIp> {
-		const ip = await Ip.findById(ipId).populate('devices');
+		const ip = await Ip.findById(ipId).populate('devices', "_id vendor category type serialNumber macAddress state");
+
 		if (!ip) {
 			throw new Error('IP not found');
 		}
 		return ip;
-	}
+	};
 
 	@Post()
 	@Security('jwt', ['admin'])
@@ -87,7 +107,7 @@ export class IpController extends Controller {
 		} catch (error: any) {
 			throw new Error(error.message);
 		}
-	}
+	};
 
 	@Put('{ipId}')
 	@Security('jwt', ['admin'])
@@ -109,14 +129,14 @@ export class IpController extends Controller {
 		} catch (error: any) {
 			throw new Error(error.message);
 		}
-	}
+	};
 
 	@Delete('{ipId}')
 	@Security('jwt', ['admin'])
 	public async deleteIp(@Path() ipId: string): Promise<{ message: string; }> {
 		const ip = await Ip.findByIdAndUpdate(
 			ipId,
-			{isActive: false},
+			{ isActive: false },
 			{ new: true, runValidators: true }
 		);
 		// const ip = await Ip.findByIdAndDelete(ipId)

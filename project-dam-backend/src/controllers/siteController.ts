@@ -80,7 +80,7 @@ export class SiteController extends Controller {
 
 		const total = await Site.countDocuments();
 
-		// Map IUser objects to GetUser DTO
+		
 		const getSitesDto: GetSitesRequest[] = sites.map(site => ({
 			_id: site._id.toString(),
 			localName: site.localName,

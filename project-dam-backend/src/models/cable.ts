@@ -1,5 +1,7 @@
 import mongoose, { Schema, Types, Document } from 'mongoose';
 
+// ! Doesn't account for breakout cables. 1 input gbic (prolly qfsp), mulitple output gbic (prolly sfp/sfp+)
+
 export interface ICable {
 	device1: Types.ObjectId;
 	device2: Types.ObjectId;
@@ -19,16 +21,6 @@ export interface ICable {
 }
 
 const CableSchema = new Schema<ICable>({
-	device1: {
-		type: Schema.Types.ObjectId,
-		ref: 'Device',
-		required: true
-	},
-	device2: {
-		type: Schema.Types.ObjectId,
-		ref: 'Device',
-		required: true
-	},
 	cableType: { type: String, required: true },
 	interface1: {
 		device: {

@@ -13,6 +13,23 @@ import {
 } from 'tsoa';
 import { Cable, ICable } from '../models/cable';
 
+interface getCablesRequest {
+	_id: string;
+	cableType: string;
+	interface1: {
+		device: string;
+		portId: string;
+		linkSpeed: string;
+		duplex: string;
+	};
+	interface2: {
+		device: string;
+		portId: string;
+		linkSpeed: string;
+		duplex: string;
+	};
+}
+
 interface CreateCableRequest {
 	device1: string;
 	device2: string;
@@ -63,10 +80,8 @@ export class CableController extends Controller {
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 })
-			.populate('device1')
-			.populate('device2')
-			.populate('interface1.device')
-			.populate('interface2.device');
+			.populate('interface1.device', '_id vendor category type serialNumber macAddress state site')
+			.populate('interface2.device', '_id vendor category type serialNumber macAddress state site')
 
 		const total = await Cable.countDocuments();
 
@@ -80,10 +95,10 @@ export class CableController extends Controller {
 	@Get('{cableId}')
 	public async getCable(@Path() cableId: string): Promise<ICable> {
 		const cable = await Cable.findById(cableId)
-			.populate('device1')
-			.populate('device2')
-			.populate('interface1.device')
-			.populate('interface2.device');
+			// .populate('device1')
+			// .populate('device2')
+			.populate('interface1.device', '_id vendor category type serialNumber macAddress state site')
+			.populate('interface2.device', '_id vendor category type serialNumber macAddress state site');
 		if (!cable) {
 			throw new Error('Cable not found');
 		}

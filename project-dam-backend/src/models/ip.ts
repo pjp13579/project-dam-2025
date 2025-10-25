@@ -20,7 +20,7 @@ const IpSchema = new Schema<IIp>({
 	type: { type: String, required: true },
 	logicalEntity: { type: String, required: true },
 	isActive: { type: Boolean, default: true },
-	devices: [{ type: Schema.Types.ObjectId, ref: 'device' }] // 1-M with sites
+	devices: [{ type: Schema.Types.ObjectId, ref: 'Device' }] // 1-M with sites
 },
 	{ timestamps: true } // automatically add createdAt and updatedAt
 );
