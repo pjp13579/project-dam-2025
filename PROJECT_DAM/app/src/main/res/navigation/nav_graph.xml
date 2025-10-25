@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_dashboard_to_siteFragment"
             app:destination="@id/siteFragment" />
+        <action
+            android:id="@+id/action_dashboard_to_deviceFragment"
+            app:destination="@id/deviceFragment" />
     </fragment>
     <fragment
         android:id="@+id/siteFragment"
@@ -42,4 +45,18 @@
             android:name="_id"
             app:argType="string"/>
     </fragment>
+    <fragment
+        android:id="@+id/deviceFragment"
+        android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
+        android:label="fragment_device"
+        tools:layout="@layout/fragment_device" >
+        <action
+            android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
+            app:destination="@id/deviceDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deviceDetailsFragment"
+        android:name="com.ipt2025.project_dam.ui.device.DeviceDetailsFragment"
+        android:label="fragment_device_details"
+        tools:layout="@layout/fragment_device_details" />
 </navigation>
