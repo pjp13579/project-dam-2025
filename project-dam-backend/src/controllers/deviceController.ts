@@ -14,6 +14,17 @@ import {
 } from 'tsoa';
 import { Device, IDevice } from '../models/device';
 
+interface GetIpRequest {
+	_id: string;
+	vendor: string;
+	category: string;
+	type: string;
+	serialNumber: string;
+	macAddress: string;
+	state: string;
+	isActive?: boolean;
+}
+
 interface CreateDeviceRequest {
 	vendor: string;
 	category: string;
@@ -49,11 +60,13 @@ export class DeviceController extends Controller {
 	): Promise<{ devices: IDevice[]; total: number; pages: number; }> {
 		const skip = (page - 1) * limit;
 		const devices = await Device.find()
+			.select('-connectedDevices')
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 });
 			;//.populate('site')
 			;//.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
+
 
 		const total = await Device.countDocuments();
 
