@@ -15,8 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SitesAPIService
-import com.ipt2025.project_dam.data.api.SitesRequest
-import com.ipt2025.project_dam.ui.site.placeholder.PlaceholderContent
 import kotlinx.coroutines.launch
 
 /**
@@ -71,7 +69,7 @@ class SiteFragment : Fragment() {
                     findNavController().navigate(R.id.action_siteFragment_to_siteDetailsFragment, bundle)
                 })
                 recyclerView.adapter = adapter
-            }catch (e: Exception){
+            }catch (e: Exception) {
                 e.printStackTrace()
             }
         }

@@ -1,5 +1,6 @@
 package com.ipt2025.project_dam
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class Dashboard : Fragment() {
     private lateinit var siteButton : Button
+    private lateinit var deviceButton : Button
 
     private var param1: String? = null
     private var param2: String? = null
@@ -33,17 +35,22 @@ class Dashboard : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_dashboard, container, false)
-
+//
         siteButton = view.findViewById(R.id.site_list_button)
+        deviceButton = view.findViewById(R.id.device_list_button)
 
         siteButton.setOnClickListener {
             findNavController().navigate(R.id.action_dashboard_to_siteFragment)
+        }
+        deviceButton.setOnClickListener {
+            findNavController().navigate(R.id.action_dashboard_to_deviceFragment)
         }
 
         return view;

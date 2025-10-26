@@ -6,13 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.ipt2025.project_dam.data.api.SiteDataResponse
 
-import com.ipt2025.project_dam.ui.site.placeholder.PlaceholderContent.PlaceholderItem
 import com.ipt2025.project_dam.databinding.FragmentSiteBinding
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
+
 class SiteRecyclerViewAdapter(
     private val values: List<SiteDataResponse>,
     private val onClick: (SiteDataResponse) -> Unit

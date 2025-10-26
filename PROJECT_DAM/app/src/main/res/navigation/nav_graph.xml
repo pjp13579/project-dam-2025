@@ -49,7 +49,7 @@
         android:id="@+id/deviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
         android:label="fragment_device"
-        tools:layout="@layout/fragment_device" >
+        tools:layout="@layout/fragment_device_list_item" >
         <action
             android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
