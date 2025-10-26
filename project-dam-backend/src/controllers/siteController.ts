@@ -80,7 +80,7 @@ export class SiteController extends Controller {
 
 		const total = await Site.countDocuments();
 
-		
+
 		const getSitesDto: GetSitesRequest[] = sites.map(site => ({
 			_id: site._id.toString(),
 			localName: site.localName,
@@ -106,7 +106,15 @@ export class SiteController extends Controller {
 
 	@Get('{siteId}')
 	public async getSite(@Path() siteId: string): Promise<ISite> {
-		const site = await Site.findById(siteId).populate('devicesAtSite');
+		const site = await Site.findById(siteId)
+			.populate({
+				path: 'devicesAtSite',
+				select: '_id vendor category type serialNumber macAddress state site',
+				populate: {
+					path: 'site',
+					select: '_id localname type country address latitude longitude'
+				}
+			});
 		if (!site) {
 			throw new Error('Site not found');
 		}
