@@ -63,11 +63,13 @@ class DeviceFragment : Fragment() {
 
                 val appContext = context?.applicationContext
                 adapter = DeviceRecyclerViewAdapter(response.devices, {
-                    val bundle = bundleOf("_id" to it._id)
+                    val bundle = bundleOf(
+                        "_id" to it._id
+                    )
                     findNavController().navigate(R.id.action_deviceFragment_to_deviceDetailsFragment, bundle)
                 })
                 recyclerView.adapter = adapter
-            }catch (e: Exception){
+            } catch (e: Exception){
                 e.printStackTrace()
             }
         }
