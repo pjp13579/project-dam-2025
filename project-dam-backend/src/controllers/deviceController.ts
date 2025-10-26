@@ -51,9 +51,9 @@ export class DeviceController extends Controller {
 		const devices = await Device.find()
 			.skip(skip)
 			.limit(limit)
-			.sort({ createdAt: -1 })
-			.populate('site')
-			.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
+			.sort({ createdAt: -1 });
+			;//.populate('site')
+			;//.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
 
 		const total = await Device.countDocuments();
 
