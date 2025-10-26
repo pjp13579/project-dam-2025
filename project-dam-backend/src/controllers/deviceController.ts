@@ -53,7 +53,7 @@ export class DeviceController extends Controller {
 			.limit(limit)
 			.sort({ createdAt: -1 })
 			.populate('site')
-			.populate('connectedDevices');
+			.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
 
 		const total = await Device.countDocuments();
 
