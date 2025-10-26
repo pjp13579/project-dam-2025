@@ -86,7 +86,7 @@ export class DeviceController extends Controller {
 				select: '_id vendor category type serialNumber macAddress state site',
 				populate: {
 					path: 'site',
-					select: '_id localname type country address'
+					select: '_id localname type country address latitude longitude'
 				}
 			});
 		if (!device) {
