@@ -3,13 +3,9 @@ package com.ipt2025.project_dam.data.api
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.Date
-
-data class SitesRequest(
-    val page: Int,
-    val limit: Int
-)
 
 data class SitesResponse(
     val pages: Int,
@@ -37,7 +33,22 @@ data class SiteAddressResponse(
     val longitude: Float
 )
 
+data class SiteDetailResponse(
+    val _id: String,
+    val localName: String,
+    val type: String,
+    val country: String,
+    val address: SiteAddressResponse?,
+    val devicesAtSite: List<DeviceDataResponse>?,
+    val isActive: Boolean,
+    val createdAt: Date,
+    val updatedAt: Date
+)
+
 interface SitesAPIService {
     @GET("sites")
     suspend fun getSites(@Query("page") page: Int, @Query("limit") limit: Int): SitesResponse
+
+    @GET("sites/{siteId}")
+    suspend fun getSiteDetails(@Path("siteId") siteId: String): SiteDetailResponse
 }

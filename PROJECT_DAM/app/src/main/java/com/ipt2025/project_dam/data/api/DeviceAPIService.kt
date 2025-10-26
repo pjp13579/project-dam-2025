@@ -25,13 +25,6 @@ data class DeviceDataResponse(
     val updatedAt: Date
 )
 
-
-data class DevicesDetailResponse(
-    val pages: Int,
-    val total: Int,
-    val devices: List<DeviceDetailDataResponse>
-)
-
 data class DeviceDetailDataResponse(
     val _id: String,
     val vendor: String,
@@ -81,6 +74,6 @@ interface DevicesAPIService {
     suspend fun getDevices(@Query("page") page: Int, @Query("limit") limit: Int): DevicesResponse
 
     @GET("devices/{deviceId}")
-    suspend fun getDeviceDetails(@Path("deviceId") deviceId: String?): DevicesDetailResponse
+    suspend fun getDeviceDetails(@Path("deviceId") deviceId: String?): DeviceDetailDataResponse
 
 }
