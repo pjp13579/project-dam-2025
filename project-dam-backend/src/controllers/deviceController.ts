@@ -80,8 +80,8 @@ export class DeviceController extends Controller {
 	@Get('{deviceId}')
 	public async getDevice(@Path() deviceId: string): Promise<IDevice> {
 		const device = await Device.findById(deviceId)
-			.populate('site')
-			.populate('connectedDevices');
+			.populate('site', '_id localname type country address')
+			.populate('connectedDevices', '_id vendor category type serialNumber macAddress state site');
 		if (!device) {
 			throw new Error('Device not found');
 		}
