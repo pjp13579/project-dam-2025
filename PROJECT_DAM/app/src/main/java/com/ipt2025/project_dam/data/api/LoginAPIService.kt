@@ -9,6 +9,10 @@ data class UserLoginRequest(
     val password: String
 )
 
+data class UserLoginTokenRequest(
+    val token: String,
+)
+
 data class UserData(
     val role: String,
     val name: String
@@ -22,4 +26,6 @@ data class UserLoginResponse(
 interface LoginAPIService {
     @POST("auth/login")
     suspend fun loginUser(@Body request: UserLoginRequest): UserLoginResponse
+    @GET("users/profile")
+    suspend fun loginToken(): UserData
 }

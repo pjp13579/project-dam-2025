@@ -12,15 +12,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.databinding.FragmentLoginBinding
 
 import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.data.LoginDataSource
+import com.ipt2025.project_dam.data.TokenManager
+import com.ipt2025.project_dam.data.api.LoginAPIService
+import com.ipt2025.project_dam.data.api.RetrofitProvider
+import com.ipt2025.project_dam.data.api.SitesAPIService
+import com.ipt2025.project_dam.data.api.UserLoginResponse
+import com.ipt2025.project_dam.data.api.UserLoginTokenRequest
 import com.ipt2025.project_dam.ui.qrcode.QRCodeView
+import com.ipt2025.project_dam.ui.site.SiteRecyclerViewAdapter
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var tokenManager: TokenManager
     private var _binding: FragmentLoginBinding? = null
 
     // This property is only valid between onCreateView and
@@ -39,6 +51,25 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tokenManager = TokenManager(requireContext())
+
+
+        val apiService = RetrofitProvider.create(LoginAPIService::class.java)
+
+        lifecycleScope.launch {
+            try{
+                val token = tokenManager.loadToken() ?: ""
+                RetrofitProvider.updateToken(token)
+                val response = apiService.loginToken()
+                RetrofitProvider.setLoggedInUser(UserLoginResponse(token = token, response))
+                loginViewModel.navigateToHome.value = true;
+            }catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
@@ -77,12 +108,16 @@ class LoginFragment : Fragment() {
 
         loginViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
+
                 loginResult ?: return@Observer
                 loadingProgressBar.visibility = View.GONE
                 loginResult.error?.let {
                     showLoginFailed(it)
                 }
                 loginResult.success?.let {
+                    val token = RetrofitProvider.getToken()
+                    if(token != null)
+                        tokenManager.saveToken(token);
                     updateUIWithUser(it)
                 }
             })

@@ -42,6 +42,6 @@ class LoginRepository(val dataSource: LoginDataSource) {
 
     private fun setLoggedInUser(loggedInUser: UserLoginResponse) {
         this.user = loggedInUser
-        RetrofitProvider.updateToken(loggedInUser.token);
+        RetrofitProvider.setLoggedInUser(loggedInUser);
     }
 }

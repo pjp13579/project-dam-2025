@@ -9,13 +9,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitProvider {
     private var authToken: String? = null
+    private var user : UserData? = null
 
     fun updateToken(token: String) {
         authToken = token
     }
 
+    fun getToken() : String?{
+        return authToken;
+    }
+
     fun clearToken() {
         authToken = null
+    }
+
+    fun setLoggedInUser(loggedInUser: UserLoginResponse){
+        authToken = loggedInUser.token
+        user = loggedInUser.user
     }
 
     fun <T> create(service: Class<T>): T {
