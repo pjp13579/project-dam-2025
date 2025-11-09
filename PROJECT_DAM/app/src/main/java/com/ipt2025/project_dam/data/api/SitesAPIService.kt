@@ -33,13 +33,27 @@ data class SiteAddressResponse(
     val longitude: Float
 )
 
+data class SiteDeviceDataResponse(
+    val _id: String,
+    val vendor: String,
+    val category: String,
+    val type: String,
+    val serialNumber: String,
+    val macAddress: String,
+    val state: String,
+    val site: DeviceDetailSiteResponse,
+    val createdAt: Date,
+    val updatedAt: Date
+)
+
+
 data class SiteDetailResponse(
     val _id: String,
     val localName: String,
     val type: String,
     val country: String,
     val address: SiteAddressResponse?,
-    val devicesAtSite: List<DeviceDataResponse>?,
+    val devicesAtSite: List<SiteDeviceDataResponse>?,
     val isActive: Boolean,
     val createdAt: Date,
     val updatedAt: Date

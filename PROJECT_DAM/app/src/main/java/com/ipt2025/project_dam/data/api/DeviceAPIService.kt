@@ -20,7 +20,7 @@ data class DeviceDataResponse(
     val serialNumber: String,
     val macAddress: String,
     val state: String,
-    val site: DeviceDetailSiteResponse,
+    val site: String,
     val createdAt: Date,
     val updatedAt: Date
 )
