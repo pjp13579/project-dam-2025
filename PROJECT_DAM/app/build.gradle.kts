@@ -14,7 +14,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://dam-backend-2025.azurewebsites.net/\"")
+        buildConfigField("String", "BASE_URL", "\"https://caconet.azurewebsites.net/\"")
     }
 
     buildTypes {
