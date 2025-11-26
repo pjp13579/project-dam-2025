@@ -87,6 +87,8 @@ class LoginFragment : Fragment() {
                 // Navigate to the next fragment (e.g., HomeFragment)
                 findNavController().navigate(R.id.action_loginFragment_to_dashboard)
 
+                usernameEditText.setText("")
+                passwordEditText.setText("")
                 // IMPORTANT: Reset the event flag in the ViewModel to prevent
                 // navigation from re-triggering (e.g., on config change/rotation)
                 loginViewModel.doneNavigating()
@@ -142,6 +144,8 @@ class LoginFragment : Fragment() {
         passwordEditText.addTextChangedListener(afterTextChangedListener)
         passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                usernameEditText.setText("")
+                passwordEditText.setText("")
                 loginViewModel.login(
                     usernameEditText.text.toString(),
                     passwordEditText.text.toString()

@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ipt2025.project_dam.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="MAIN"
-        app:showAsAction="never" />
+        android:id="@+id/nav_logout"
+        android:title="@string/logout" />
+    <item
+        android:id="@+id/nav_qr"
+        android:title="@string/qr" />
 </menu>
