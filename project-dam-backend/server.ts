@@ -50,7 +50,7 @@ console.log("proc ess.env.MONGODB_URI: "+ process.env.MONGODB_URI);
 console.log("proc ess.env.MONGODB_URI as string: "+ (process.env.MONGODB_URI as string));
 
 // mongoDB connection
-mongoose.connect("mongodb+srv://rgCras:imagensbase64!@dam20251.global.mongocluster.cosmos.azure.com/dam?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000")
+mongoose.connect(process.env.MONGODB_URI as string)
 	.then(() => console.log('MongoDB connected successfully'))
 	.catch(err => console.error('MongoDB connection error:', err));
 
