@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_siteFragment_to_siteDetailsFragment"
             app:destination="@id/siteDetailsFragment" />
+        <action
+            android:id="@+id/action_siteFragment_to_addEditSiteFragment"
+            app:destination="@id/addEditSiteFragment" />
     </fragment>
     <fragment
         android:id="@+id/siteDetailsFragment"
@@ -44,12 +47,18 @@
         <argument
             android:name="_id"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_addEditSiteFragment"
+            app:destination="@id/addEditSiteFragment" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_deviceDetailsFragment"
+            app:destination="@id/deviceDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/deviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
         android:label="fragment_device"
-        tools:layout="@layout/fragment_device_list_item" >
+        tools:layout="@layout/fragment_device_list" >
         <action
             android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
@@ -58,5 +67,20 @@
         android:id="@+id/deviceDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceDetailsFragment"
         android:label="fragment_device_details"
-        tools:layout="@layout/fragment_device_details" />
+        tools:layout="@layout/fragment_device_detail" />
+    <fragment
+        android:id="@+id/addEditSiteFragment"
+        android:name="com.ipt2025.project_dam.ui.site.AddEditSiteFragment"
+        android:label="Add/Edit Site"
+        tools:layout="@layout/fragment_add_edit_site" >
+        <argument
+            android:name="_id"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="isEditMode"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
 </navigation>

@@ -43,7 +43,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/devcie_type"
+                android:id="@+id/device_type_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp" />
@@ -82,7 +82,7 @@
                     android:padding="8dp">
 
                     <TextView
-                        android:id="@+id/DevcieDetailSiteHeader"
+                        android:id="@+id/DeviceDetailSiteHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"

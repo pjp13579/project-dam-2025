@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.ipt2025.project_dam.ui.SiteFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.site.SiteFragment"
-    tools:listitem="@layout/fragment_site" />
+    android:orientation="vertical"
+    tools:context=".ui.site.SiteFragment">
+
+    <!-- Add New Site Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_site"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Register New Site"
+        android:textSize="16sp" />
+
+    <!-- RecyclerView for sites list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="16dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/fragment_site" />
+
+</LinearLayout>
