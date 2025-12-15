@@ -48,9 +48,9 @@ app.use(errorHandler);
 console.log("Connecting to MongoDB...");
 console.log("proc ess.env.MONGODB_URI: "+ process.env.MONGODB_URI);
 console.log("proc ess.env.MONGODB_URI as string: "+ (process.env.MONGODB_URI as string));
-
+let conString = process.env.MONGODB_URI as string
 // mongoDB connection
-mongoose.connect(process.env.MONGODB_URI as string)
+mongoose.connect(conString)
 	.then(() => console.log('MongoDB connected successfully'))
 	.catch(err => console.error('MongoDB connection error:', err));
 
