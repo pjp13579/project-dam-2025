@@ -59,7 +59,7 @@ export class DeviceController extends Controller {
 		@Query() limit: number = 10
 	): Promise<{ devices: IDevice[]; total: number; pages: number; }> {
 		const skip = (page - 1) * limit;
-		const devices = await Device.find()
+		const devices = await Device.find({ isActive: true })
 			.select('-connectedDevices')
 			.skip(skip)
 			.limit(limit)

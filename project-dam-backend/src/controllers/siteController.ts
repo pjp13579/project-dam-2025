@@ -71,14 +71,14 @@ export class SiteController extends Controller {
 		@Query() limit: number = 10
 	): Promise<{ sites: GetSitesRequest[]; total: number; pages: number; }> {
 		const skip = (page - 1) * limit;
-		const sites = await Site.find()
+		const sites = await Site.find({ isActive: true })
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 })
 			//.populate('devicesAtSite')
 			;
 
-		const total = await Site.countDocuments();
+		const total = await Site.countDocuments({ isActive: true });
 
 
 		const getSitesDto: GetSitesRequest[] = sites.map(site => ({
