@@ -64,8 +64,8 @@ export class DeviceController extends Controller {
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 });
-			;//.populate('site')
-			;//.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
+		;//.populate('site')
+		;//.populate('connectedDevices', '_id vendor category type serialNumber macAddress state');
 
 
 		const total = await Device.countDocuments();
@@ -79,7 +79,10 @@ export class DeviceController extends Controller {
 
 	@Get('{deviceId}')
 	public async getDevice(@Path() deviceId: string): Promise<IDevice> {
-		const device = await Device.findById(deviceId)
+		const device = await Device.findOne({
+			_id: deviceId,
+			isActive: true
+		})
 			.populate('site', '_id localname type country address')
 			.populate({
 				path: 'connectedDevices',
@@ -128,7 +131,10 @@ export class DeviceController extends Controller {
 	): Promise<IDevice> {
 		try {
 			const device = await Device.findByIdAndUpdate(
-				deviceId,
+				{
+					_id: deviceId,
+					isActive: true
+				},
 				{ ...requestBody, updatedAt: new Date() },
 				{ new: true, runValidators: true }
 			)
@@ -148,7 +154,10 @@ export class DeviceController extends Controller {
 	@Security('jwt', ['admin'])
 	public async deleteDevice(@Path() deviceId: string): Promise<{ message: string; }> {
 		const device = await Device.findByIdAndUpdate(
-			deviceId,
+			{
+				_id: deviceId,
+				isActive: true
+			},
 			{ isActive: false },
 			{ new: true, runValidators: true }
 		);

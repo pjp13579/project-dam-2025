@@ -106,7 +106,7 @@ export class SiteController extends Controller {
 
 	@Get('{siteId}')
 	public async getSite(@Path() siteId: string): Promise<ISite> {
-		const site = await Site.findById(siteId)
+		const site = await Site.findOne({ _id: siteId, isActive: true })
 			.populate({
 				path: 'devicesAtSite',
 				select: '_id vendor category type serialNumber macAddress state site',
@@ -152,7 +152,7 @@ export class SiteController extends Controller {
 	): Promise<ISite> {
 		try {
 			const site = await Site.findByIdAndUpdate(
-				siteId,
+				{ _id: siteId, isActive: true },
 				{ ...requestBody, updatedAt: new Date() },
 				{ new: true, runValidators: true }
 			).populate('devicesAtSite');
@@ -170,7 +170,7 @@ export class SiteController extends Controller {
 	@Security('jwt', ['admin'])
 	public async deleteSite(@Path() siteId: string): Promise<{ message: string; }> {
 		const site = await Site.findByIdAndUpdate(
-			siteId,
+			{ _id: siteId, isActive: true },
 			{ isActive: false },
 			{ new: true, runValidators: true }
 		);
