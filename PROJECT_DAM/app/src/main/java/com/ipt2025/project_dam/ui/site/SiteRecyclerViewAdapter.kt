@@ -8,17 +8,9 @@ import com.ipt2025.project_dam.data.api.SiteDataResponse
 import com.ipt2025.project_dam.databinding.FragmentSiteBinding
 
 class SiteRecyclerViewAdapter(
+    private val sites: MutableList<SiteDataResponse>,
     private val onClick: (SiteDataResponse) -> Unit
 ) : RecyclerView.Adapter<SiteRecyclerViewAdapter.ViewHolder>() {
-
-    // Store sites in a mutable list
-    private var sites: List<SiteDataResponse> = emptyList()
-
-    // Function to update the list
-    fun submitList(newSites: List<SiteDataResponse>) {
-        sites = newSites
-        notifyDataSetChanged() // tells RecyclerView to refresh
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -39,16 +31,21 @@ class SiteRecyclerViewAdapter(
 
     override fun getItemCount(): Int = sites.size
 
-    inner class ViewHolder(private val binding: FragmentSiteBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun addSites(newSites: List<SiteDataResponse>) {
+        val start = sites.size
+        sites.addAll(newSites)
+        notifyItemRangeInserted(start, newSites.size)
+    }
+
+    inner class ViewHolder(
+        private val binding: FragmentSiteBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
         val idView: TextView = binding.itemNumber
         val contentView: TextView = binding.content
 
-        fun bind(site: SiteDataResponse){
-            binding.root.setOnClickListener{ onClick(site) }
-        }
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
+        fun bind(site: SiteDataResponse) {
+            binding.root.setOnClickListener { onClick(site) }
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.components.EndlessScrollListener
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SitesAPIService
 import kotlinx.coroutines.launch
@@ -19,6 +20,9 @@ class SiteFragment : Fragment() {
     private lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     private lateinit var adapter: SiteRecyclerViewAdapter
     private lateinit var btnAddSite: MaterialButton
+
+    private var currentPage = 1
+    private val PAGE_LIMIT = 20
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,13 +40,13 @@ class SiteFragment : Fragment() {
         btnAddSite = view.findViewById(R.id.btn_add_site)
 
         setupRecyclerView()
-        fetchSites()
+        fetchSites(currentPage, PAGE_LIMIT)
         setupClickListeners()
     }
 
     private fun setupRecyclerView() {
         // Initialize adapter with click handler
-        adapter = SiteRecyclerViewAdapter { site ->
+        adapter = SiteRecyclerViewAdapter(mutableListOf()) { site ->
             // Navigate to site details when clicked
             val bundle = Bundle().apply {
                 putString("_id", site._id)
@@ -51,16 +55,22 @@ class SiteFragment : Fragment() {
         }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addOnScrollListener(object : EndlessScrollListener() {
+            override fun onLoadMore(page: Int) {
+                currentPage++
+                fetchSites(currentPage, PAGE_LIMIT)
+            }
+        })
         recyclerView.adapter = adapter
     }
 
-    private fun fetchSites(){
+    private fun fetchSites(page : Int, limit : Int){
         val apiService = RetrofitProvider.create(SitesAPIService::class.java)
 
         lifecycleScope.launch {
             try{
-                val response = apiService.getSites(page = 1, limit = 20)
-                adapter.submitList(response.sites)
+                val response = apiService.getSites(page = page, limit = limit)
+                adapter.addSites(response.sites)
             }catch (e: Exception) {
                 e.printStackTrace()
                 // Show error message

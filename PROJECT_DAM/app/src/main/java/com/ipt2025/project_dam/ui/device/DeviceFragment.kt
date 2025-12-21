@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.components.EndlessScrollListener
 import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ class DeviceFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DeviceRecyclerViewAdapter
+    private var currentPage = 1
+    private val PAGE_LIMIT = 20
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,32 +41,38 @@ class DeviceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        fetchDevices()
+        fetchDevices(currentPage, PAGE_LIMIT)
     }
 
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = DeviceRecyclerViewAdapter(emptyList()) { device ->
+        adapter = DeviceRecyclerViewAdapter(mutableListOf()) { device ->
             val bundle = bundleOf("_id" to device._id)
             findNavController().navigate(R.id.action_deviceFragment_to_deviceDetailsFragment, bundle)
         }
+
+        recyclerView.addOnScrollListener(object : EndlessScrollListener() {
+            override fun onLoadMore(page: Int) {
+                currentPage++
+                fetchDevices(currentPage, PAGE_LIMIT)
+            }
+        })
+
         recyclerView.adapter = adapter
     }
 
-    private fun fetchDevices() {
-        Toast.makeText(context, "Fetching devices...", Toast.LENGTH_SHORT).show()
+    private fun fetchDevices(page: Int, limit: Int) {
+        //Toast.makeText(context, "Fetching devices...", Toast.LENGTH_SHORT).show()
 
         val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
 
         lifecycleScope.launch {
             try {
-                val response = apiService.getDevices(page = 1, limit = 20)
-                Toast.makeText(context, "Found ${response.devices.size} devices", Toast.LENGTH_SHORT).show()
+                val response = apiService.getDevices(page = page, limit = limit)
+                //Toast.makeText(context, "Found ${response.devices.size} devices", Toast.LENGTH_SHORT).show()
 
-                adapter = DeviceRecyclerViewAdapter(response.devices) { device ->
-                    val bundle = bundleOf("_id" to device._id)
-                    findNavController().navigate(R.id.action_deviceFragment_to_deviceDetailsFragment, bundle)
-                }
+                adapter.addDevices(response.devices)
+
                 recyclerView.adapter = adapter
 
             } catch (e: Exception) {

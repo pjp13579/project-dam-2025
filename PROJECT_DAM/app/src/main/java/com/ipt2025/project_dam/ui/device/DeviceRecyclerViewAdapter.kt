@@ -7,7 +7,7 @@ import com.ipt2025.project_dam.data.api.DeviceDataResponse
 import com.ipt2025.project_dam.databinding.FragmentDeviceListItemBinding
 
 class DeviceRecyclerViewAdapter(
-    private val devices: List<DeviceDataResponse>,
+    private val devices: MutableList<DeviceDataResponse>,
     private val onClick: (DeviceDataResponse) -> Unit
 ) : RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder>() {
 
@@ -21,11 +21,16 @@ class DeviceRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val device = devices[position]
-        holder.bind(device)
+        holder.bind(devices[position])
     }
 
     override fun getItemCount(): Int = devices.size
+
+    fun addDevices(newDevices: List<DeviceDataResponse>) {
+        val start = devices.size
+        devices.addAll(newDevices)
+        notifyItemRangeInserted(start, newDevices.size)
+    }
 
     inner class ViewHolder(
         private val binding: FragmentDeviceListItemBinding
