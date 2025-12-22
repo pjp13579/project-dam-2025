@@ -7,15 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.data.api.DeviceDetailDataResponse
 import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
-import com.ipt2025.project_dam.databinding.FragmentDeviceDetailBinding // CORRECT BINDING!
+import com.ipt2025.project_dam.databinding.FragmentDeviceDetailBinding
 import kotlinx.coroutines.launch
 
 class DeviceDetailsFragment : Fragment() {
 
-    // Use FragmentDeviceDetailBinding (from fragment_device_detail.xml)
     private var _binding: FragmentDeviceDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: DeviceDetailsConnectedDevicesAdapter
@@ -26,7 +28,6 @@ class DeviceDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the CORRECT layout
         _binding = FragmentDeviceDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,17 +38,28 @@ class DeviceDetailsFragment : Fragment() {
         // Get deviceId from arguments
         deviceId = arguments?.getString("_id")
 
-        // DEBUG: Check if we got the ID
-        println("DeviceDetailsFragment - Received deviceId: $deviceId")
-
-        if (deviceId == null) {
-            // Show error
-            binding.vendor.text = "Error: No device ID provided"
+        if (deviceId == null || deviceId.isNullOrEmpty()) {
+            showErrorMessage("No device ID provided")
+            setupRetryButton()
             return
         }
 
-        setupRecyclerView()
+        setupUI()
         loadDeviceDetails()
+    }
+
+    private fun setupUI() {
+        // Setup back button in toolbar
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_deviceDetailsFragment_to_dashboard)
+        }
+
+        // Setup retry button
+        binding.retryButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        setupRecyclerView()
     }
 
     private fun setupRecyclerView() {
@@ -58,38 +70,82 @@ class DeviceDetailsFragment : Fragment() {
 
     private fun loadDeviceDetails() {
         deviceId?.let { id ->
+            // Show loading state
+            showLoading(true)
+            binding.errorContainer.visibility = View.GONE
+
             val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
             viewModel.loadDeviceDetails(apiService, id)
 
             lifecycleScope.launch {
                 viewModel.uiState.collect { state ->
+                    showLoading(false)
+
                     when (state) {
                         is DeviceDetailsUiState.Loading -> {
-                            binding.vendor.text = "Loading..."
+                            showLoading(true)
                         }
                         is DeviceDetailsUiState.Success -> {
                             val device = state.device
-                            binding.vendor.text = device.vendor
-                            binding.category.text = device.category
-                            binding.deviceTypeInfo.text = device.type // FIX TYPO: was "devcieType"
-                            binding.siteType.text = device.site.type
-                            binding.siteCountry.text = device.site.country
-                            binding.siteCity.text = device.site.address.city
-                            binding.siteState.text = device.site.address.state
-                            binding.siteStreet.text = device.site.address.street
-                            binding.siteZipcode.text = device.site.address.zipCode
-                            binding.MacAddress.text = device.macAddress
-                            binding.state.text = device.state
-                            binding.serialNumber.text = device.serialNumber
-
-                            adapter.setConnectedDevices(device.connectedDevices)
+                            displayDeviceData(device)
+                            binding.scrollView.visibility = View.VISIBLE
+                            binding.errorContainer.visibility = View.GONE
                         }
                         is DeviceDetailsUiState.Error -> {
-                            binding.vendor.text = "Error: ${state.message}"
+                            showErrorMessage("Error: ${state.message}")
+                            binding.scrollView.visibility = View.GONE
+                            binding.errorContainer.visibility = View.VISIBLE
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun displayDeviceData(device: DeviceDetailDataResponse) {
+        // Device information
+        binding.vendor.text = "Vendor: ${device.vendor}"
+        binding.category.text = "Category: ${device.category}"
+        binding.deviceTypeInfo.text = "Type: ${device.type}"
+        binding.serialNumber.text = "Serial Number: ${device.serialNumber}"
+        binding.MacAddress.text = "MAC Address: ${device.macAddress}"
+        binding.state.text = "State: ${device.state}"
+
+        // Site information
+        binding.siteType.text = "Site Type: ${device.site.type}"
+        binding.siteCountry.text = "Country: ${device.site.country}"
+        binding.siteCity.text = "City: ${device.site.address.city}"
+        binding.siteState.text = "State: ${device.site.address.state}"
+        binding.siteStreet.text = "Street: ${device.site.address.street}"
+        binding.siteZipcode.text = "Zip Code: ${device.site.address.zipCode}"
+
+        // Connected devices
+        adapter.setConnectedDevices(device.connectedDevices)
+
+        // Show connected devices section only if there are any
+        if (device.connectedDevices.isNotEmpty()) {
+            binding.connectedDevicesSection.visibility = View.VISIBLE
+        } else {
+            binding.connectedDevicesSection.visibility = View.GONE
+        }
+    }
+
+    private fun showLoading(show: Boolean) {
+        binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        if (show) {
+            binding.scrollView.visibility = View.GONE
+        }
+    }
+
+    private fun showErrorMessage(message: String) {
+        binding.errorText.text = message
+        binding.errorContainer.visibility = View.VISIBLE
+    }
+
+    private fun setupRetryButton() {
+        binding.retryButton.visibility = View.VISIBLE
+        binding.retryButton.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

@@ -1,3 +1,4 @@
+// MainActivity.kt
 package com.ipt2025.project_dam
 
 import android.content.Intent
@@ -45,14 +46,17 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                // Screens where you want the bottom bar HIDDEN
-                R.id.loginFragment-> {
+                R.id.loginFragment,
+                R.id.nav_qr,
+                R.id.deviceDetailsFragment -> {
                     bottomNav.visibility = View.GONE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                    supportActionBar?.setDisplayShowHomeEnabled(true)
                 }
-
-                // Screens where it should be visible
                 else -> {
                     bottomNav.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    supportActionBar?.setDisplayShowHomeEnabled(false)
                 }
             }
         }
@@ -62,16 +66,32 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_qr -> {
-
+                    navController.navigate(R.id.action_dashboard_to_QRCodeView)
                     true
                 }
                 R.id.nav_logout -> {
                     RetrofitProvider.clearToken()
                     tokenManager.clearToken()
-                    navController.popBackStack(R.id.loginFragment, inclusive = false )
+                    navController.popBackStack(R.id.loginFragment, inclusive = false)
                     true
                 }
                 else -> false
+            }
+        }
+
+        // Handle back button press
+        onBackPressedDispatcher.addCallback(this) {
+            when (navController.currentDestination?.id) {
+                R.id.nav_qr -> {
+                    bottomNav.visibility = View.VISIBLE
+                    navController.navigateUp()
+                }
+                R.id.deviceDetailsFragment -> {
+                    navController.navigateUp()
+                }
+                else -> {
+                    finish()
+                }
             }
         }
     }

@@ -8,20 +8,25 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.ipt2025.project_dam.R
+import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
+import com.ipt2025.project_dam.R
+import com.ipt2025.project_dam.data.api.DevicesAPIService
+import com.ipt2025.project_dam.data.api.RetrofitProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.regex.Pattern
 
-/**
- * User details post authentication that is exposed to the UI
- */
 class QRCodeView : Fragment() {
 
-    private lateinit var text: TextView
-    private lateinit var button: Button
+    private lateinit var progressBar: ProgressBar
+    private lateinit var messageText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,31 +34,47 @@ class QRCodeView : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_qrcode, container, false)
 
-        text = view.findViewById(R.id.text)
-        button = view.findViewById(R.id.button)
+        progressBar = view.findViewById(R.id.progressBar)
+        messageText = view.findViewById(R.id.messageText)
 
-        // Check if button is found
-        if (button == null) {
-            Toast.makeText(requireContext(), "button not found", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "button found", Toast.LENGTH_SHORT).show()
-        }
-
-        // FIX: Call permission check instead of direct scan
-        button.setOnClickListener {
-            Toast.makeText(requireContext(), "QRCode Button clicked", Toast.LENGTH_SHORT).show()
-            checkCameraPermission()
-        }
+        // Show initial message
+        messageText.text = "Preparing camera..."
 
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Start camera immediately when fragment is ready
+        startCamera()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // If we come back to this fragment (e.g., from denied permission dialog),
+        // try to start camera again
+        if (!isCameraPermissionGranted()) {
+            startCamera()
+        }
+    }
+
+    private fun startCamera() {
+        checkCameraPermission()
+    }
+
     private fun startQRCodeScan() {
+        // Hide progress bar, show scanning message
+        progressBar.visibility = View.GONE
+        messageText.text = "Point camera at QR code"
+
         val integrator = IntentIntegrator.forSupportFragment(this)
         integrator.setPrompt("Scan a QR code")
         integrator.setCameraId(0)
         integrator.setBeepEnabled(false)
         integrator.setBarcodeImageEnabled(true)
+        integrator.setOrientationLocked(true)
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         integrator.initiateScan()
     }
 
@@ -61,28 +82,116 @@ class QRCodeView : Fragment() {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
-                text.text = "Cancelled"
+                // User cancelled scanning, navigate back
+                findNavController().navigateUp()
             } else {
-                text.text = "${result.contents}"
+                val scannedId = result.contents.trim()
+                messageText.text = "Validating code..."
+                progressBar.visibility = View.VISIBLE
+
+                // Validate the scanned ID
+                if (isValidMongoObjectId(scannedId)) {
+                    // Check if device exists in backend
+                    checkDeviceExists(scannedId)
+                } else {
+                    progressBar.visibility = View.GONE
+                    messageText.text = "Invalid QR code format"
+                    Toast.makeText(
+                        requireContext(),
+                        "Invalid MongoDB ObjectID format. Please scan a valid device QR code.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    // Wait a moment and restart camera
+                    view?.postDelayed({
+                        startQRCodeScan()
+                    }, 2000)
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    private fun isValidMongoObjectId(id: String): Boolean {
+        // MongoDB ObjectID is 24 hex characters
+        val mongoIdPattern = Pattern.compile("^[0-9a-fA-F]{24}$")
+        return mongoIdPattern.matcher(id).matches()
+    }
+
+    private fun checkDeviceExists(deviceId: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                messageText.text = "Validating device..."
+
+                val exists = withContext(Dispatchers.IO) {
+                    try {
+                        val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
+                        // This will throw an exception if device doesn't exist (404)
+                        apiService.getDeviceDetails(deviceId)
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
+
+                progressBar.visibility = View.GONE
+
+                if (exists) {
+                    // Navigate to device details fragment
+                    val bundle = Bundle().apply {
+                        putString("_id", deviceId)
+                    }
+                    findNavController().navigate(
+                        R.id.action_QRCodeView_to_deviceDetailsFragment,
+                        bundle
+                    )
+                } else {
+                    messageText.text = "Device not found"
+                    Toast.makeText(
+                        requireContext(),
+                        "Device with ID $deviceId not found in database",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    // Wait a moment and restart camera
+                    view?.postDelayed({
+                        startQRCodeScan()
+                    }, 2000)
+                }
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+                messageText.text = "Connection error"
+                Toast.makeText(
+                    requireContext(),
+                    "Error checking device: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // Wait a moment and restart camera
+                view?.postDelayed({
+                    startQRCodeScan()
+                }, 2000)
+            }
+        }
+    }
+
     private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (isCameraPermissionGranted()) {
+            startQRCodeScan()
+        } else {
             requestPermissions(
                 arrayOf(Manifest.permission.CAMERA),
                 CAMERA_PERMISSION_REQUEST_CODE
             )
-        } else {
-            startQRCodeScan()
         }
+    }
+
+    private fun isCameraPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -95,7 +204,21 @@ class QRCodeView : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startQRCodeScan()
             } else {
-                Toast.makeText(requireContext(), "Camera permission required", Toast.LENGTH_SHORT).show()
+                // Permission denied
+                progressBar.visibility = View.GONE
+                messageText.text = "Camera permission required"
+
+                Toast.makeText(
+                    requireContext(),
+                    "Camera permission is required to scan QR codes. Please enable it in settings.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // Optionally, you could show a button to open app settings
+                // or navigate back after a delay
+                view?.postDelayed({
+                    findNavController().navigateUp()
+                }, 3000)
             }
         }
     }

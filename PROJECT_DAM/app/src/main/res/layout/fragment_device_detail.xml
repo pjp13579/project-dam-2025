@@ -1,167 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <!-- Simplified layout without nested card views -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Device Details" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/DeviceDetailsHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Device Information"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/vendor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/device_type_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/serialNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/MacAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/state"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp" />
-
+            <!-- Device Information Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                app:cardUseCompatPadding="true">
+                app:cardElevation="4dp">
 
-                <!-- Site Location -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="16dp">
 
                     <TextView
-                        android:id="@+id/DeviceDetailSiteHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Device Information"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/vendor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Site Information"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:text="Vendor: "
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/site_type"
+                        android:id="@+id/category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:text="Category: "
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/site_country"
+                        android:id="@+id/deviceTypeInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:text="Type: "
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/site_city"
+                        android:id="@+id/serialNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:text="Serial: "
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/site_state"
+                        android:id="@+id/MacAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:text="MAC: "
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/site_street"
+                        android:id="@+id/state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/site_zipcode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:text="State: "
+                        android:textSize="14sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Site Information Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                app:cardUseCompatPadding="true">
-                <!-- Connected Devices Header -->
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="16dp">
 
                     <TextView
-                        android:id="@+id/DeviceDetailsConnectedDevicesHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Connected Devices"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:text="Site Information"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                    <!-- Connected Devices List -->
+                    <TextView
+                        android:id="@+id/siteType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Site Type: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/siteCountry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Country: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/siteCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="City: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/siteState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="State: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/siteStreet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Street: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/siteZipcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Zip Code: "
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Connected Devices Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/connectedDevicesSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Connected Devices"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvConnectedDevices"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp" />
-
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </ScrollView>
 
-</com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Loading State -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!-- Error State -->
+    <LinearLayout
+        android:id="@+id/errorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Error loading device details"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Go Back"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

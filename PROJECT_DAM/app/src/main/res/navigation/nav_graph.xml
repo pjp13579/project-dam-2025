@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.ipt2025.project_dam.ui.login.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_dashboard"
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/dashboard"
         android:name="com.ipt2025.project_dam.Dashboard"
-        android:label="fragment_dashboard"
+        android:label="Dashboard"
         tools:layout="@layout/fragment_dashboard" >
         <action
             android:id="@+id/action_dashboard_to_siteFragment"
@@ -26,11 +26,14 @@
         <action
             android:id="@+id/action_dashboard_to_deviceFragment"
             app:destination="@id/deviceFragment" />
+        <action
+            android:id="@+id/action_dashboard_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/siteFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteFragment"
-        android:label="fragment_site_list"
+        android:label="Sites"
         tools:layout="@layout/fragment_site_list" >
         <action
             android:id="@+id/action_siteFragment_to_siteDetailsFragment"
@@ -42,7 +45,7 @@
     <fragment
         android:id="@+id/siteDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteDetailsFragment"
-        android:label="fragment_site_details"
+        android:label="Site"
         tools:layout="@layout/fragment_site_details" >
         <argument
             android:name="_id"
@@ -53,11 +56,14 @@
         <action
             android:id="@+id/action_siteDetailsFragment_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_dashboard"
+            app:destination="@id/dashboard" />
     </fragment>
     <fragment
         android:id="@+id/deviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
-        android:label="fragment_device"
+        android:label="Devices"
         tools:layout="@layout/fragment_device_list" >
         <action
             android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
@@ -66,8 +72,12 @@
     <fragment
         android:id="@+id/deviceDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceDetailsFragment"
-        android:label="fragment_device_details"
-        tools:layout="@layout/fragment_device_detail" />
+        android:label="Device"
+        tools:layout="@layout/fragment_device_detail" >
+        <action
+            android:id="@+id/action_deviceDetailsFragment_to_dashboard"
+            app:destination="@id/dashboard" />
+    </fragment>
     <fragment
         android:id="@+id/addEditSiteFragment"
         android:name="com.ipt2025.project_dam.ui.site.AddEditSiteFragment"
@@ -81,6 +91,14 @@
             android:name="isEditMode"
             app:argType="boolean"
             android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/QRCodeView"
+        android:name="com.ipt2025.project_dam.ui.qrcode.QRCodeView"
+        android:label="Device QR Code" >
+        <action
+            android:id="@+id/action_QRCodeView_to_deviceDetailsFragment"
+            app:destination="@id/deviceDetailsFragment" />
     </fragment>
 
 </navigation>
