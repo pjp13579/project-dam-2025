@@ -8,18 +8,18 @@
         android:id="@+id/loginFragment"
         android:name="com.ipt2025.project_dam.ui.login.LoginFragment"
         android:label="Login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_dashboard"
             app:destination="@id/dashboard"
             app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="false"/>
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/dashboard"
         android:name="com.ipt2025.project_dam.Dashboard"
         android:label="Dashboard"
-        tools:layout="@layout/fragment_dashboard" >
+        tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboard_to_siteFragment"
             app:destination="@id/siteFragment" />
@@ -34,22 +34,25 @@
         android:id="@+id/siteFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteFragment"
         android:label="Sites"
-        tools:layout="@layout/fragment_site_list" >
+        tools:layout="@layout/fragment_site_list">
         <action
             android:id="@+id/action_siteFragment_to_siteDetailsFragment"
             app:destination="@id/siteDetailsFragment" />
         <action
             android:id="@+id/action_siteFragment_to_addEditSiteFragment"
             app:destination="@id/addEditSiteFragment" />
+        <action
+            android:id="@+id/action_siteFragment_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/siteDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteDetailsFragment"
         android:label="Site"
-        tools:layout="@layout/fragment_site_details" >
+        tools:layout="@layout/fragment_site_details">
         <argument
             android:name="_id"
-            app:argType="string"/>
+            app:argType="string" />
         <action
             android:id="@+id/action_siteDetailsFragment_to_addEditSiteFragment"
             app:destination="@id/addEditSiteFragment" />
@@ -59,46 +62,79 @@
         <action
             android:id="@+id/action_siteDetailsFragment_to_dashboard"
             app:destination="@id/dashboard" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/deviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
         android:label="Devices"
-        tools:layout="@layout/fragment_device_list" >
+        tools:layout="@layout/fragment_device_list">
         <action
             android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
+        <action
+            android:id="@+id/action_deviceFragment_to_addEditDeviceFragment"
+            app:destination="@id/addEditDeviceFragment" />
+        <action
+            android:id="@+id/action_deviceFragment_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/deviceDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceDetailsFragment"
         android:label="Device"
-        tools:layout="@layout/fragment_device_detail" >
+        tools:layout="@layout/fragment_device_detail">
         <action
             android:id="@+id/action_deviceDetailsFragment_to_dashboard"
             app:destination="@id/dashboard" />
+        <action
+            android:id="@+id/action_deviceDetailsFragment_to_addEditDeviceFragment"
+            app:destination="@id/addEditDeviceFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditSiteFragment"
         android:name="com.ipt2025.project_dam.ui.site.AddEditSiteFragment"
         android:label="Add/Edit Site"
-        tools:layout="@layout/fragment_add_edit_site" >
+        tools:layout="@layout/fragment_add_edit_site">
         <argument
             android:name="_id"
-            app:argType="string"
-            android:defaultValue="" />
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="isEditMode"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_addEditSiteFragment_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/QRCodeView"
         android:name="com.ipt2025.project_dam.ui.qrcode.QRCodeView"
-        android:label="Device QR Code" >
+        android:label="Device QR Code">
         <action
             android:id="@+id/action_QRCodeView_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditDeviceFragment"
+        android:name="com.ipt2025.project_dam.ui.device.AddEditDeviceFragment"
+        android:label="Device"
+        tools:layout="@layout/fragment_add_edit_device">
+        <argument
+            android:name="_id"
+            android:defaultValue="@null"
+            app:argType="string" />
+        <argument
+            android:name="isEditMode"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_addEditDeviceFragment_to_QRCodeView"
+            app:destination="@id/QRCodeView" />
     </fragment>
 
 </navigation>

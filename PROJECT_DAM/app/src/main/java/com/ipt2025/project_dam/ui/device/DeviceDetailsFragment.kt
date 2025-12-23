@@ -6,9 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.DeviceDetailDataResponse
 import com.ipt2025.project_dam.data.api.DevicesAPIService
@@ -23,6 +26,8 @@ class DeviceDetailsFragment : Fragment() {
     private lateinit var adapter: DeviceDetailsConnectedDevicesAdapter
     private val viewModel: DeviceDetailsViewModel by viewModels()
     private var deviceId: String? = null
+    private lateinit var btnEditDevice: MaterialButton
+    private lateinit var btnDeleteDevice: MaterialButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +49,10 @@ class DeviceDetailsFragment : Fragment() {
             return
         }
 
+        // Initialize buttons
+        btnEditDevice = view.findViewById(R.id.btn_edit_device)
+        btnDeleteDevice = view.findViewById(R.id.btn_delete_device)
+
         setupUI()
         loadDeviceDetails()
     }
@@ -51,12 +60,22 @@ class DeviceDetailsFragment : Fragment() {
     private fun setupUI() {
         // Setup back button in toolbar
         binding.topAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_deviceDetailsFragment_to_dashboard)
+            findNavController().navigateUp()
         }
 
         // Setup retry button
         binding.retryButton.setOnClickListener {
             findNavController().navigateUp()
+        }
+
+        // Setup edit button
+        btnEditDevice.setOnClickListener {
+            navigateToEditDevice()
+        }
+
+        // Setup delete button
+        btnDeleteDevice.setOnClickListener {
+            showDeleteConfirmationDialog()
         }
 
         setupRecyclerView()
@@ -66,6 +85,48 @@ class DeviceDetailsFragment : Fragment() {
         adapter = DeviceDetailsConnectedDevicesAdapter()
         binding.rvConnectedDevices.adapter = adapter
         binding.rvConnectedDevices.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun navigateToEditDevice() {
+        deviceId?.let { id ->
+            val bundle = Bundle().apply {
+                putString("_id", id)
+                putBoolean("isEditMode", true)
+            }
+            findNavController().navigate(R.id.action_deviceDetailsFragment_to_addEditDeviceFragment, bundle)
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Device")
+            .setMessage("Are you sure you want to delete this device?")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteDevice()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteDevice() {
+        lifecycleScope.launch {
+            try {
+                deviceId?.let { id ->
+                    val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
+                    val response = apiService.deleteDevice(id)
+
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Device deleted successfully", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to delete device", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun loadDeviceDetails() {

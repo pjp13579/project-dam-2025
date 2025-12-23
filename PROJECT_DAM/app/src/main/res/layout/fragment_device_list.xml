@@ -7,9 +7,9 @@
     android:orientation="vertical"
     tools:context=".ui.site.SiteFragment">
 
-    <!-- Add New Site Button -->
+    <!-- Add New Device Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_site"
+        android:id="@+id/btn_add_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

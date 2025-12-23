@@ -48,22 +48,21 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_category_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_descriptive_name"
+                android:id="@+id/et_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Device Name *"
+                android:hint="Category *"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -98,7 +97,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="16dp"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -111,18 +110,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <!-- Add this to your device form layout -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
             <AutoCompleteTextView
                 android:id="@+id/actv_site"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select Site"
+                android:hint="Select Site *"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -149,7 +147,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Search Bar -->
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -160,24 +158,24 @@
                         android:id="@+id/et_search_connected"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Search term"
+                        android:hint="Search devices..."
                         android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Device List with Checkboxes -->
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_device_selection"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginBottom="8dp" />
 
-                <TextView
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tv_selected_device_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No connected devices"
-                    android:textStyle="italic" />
+                    android:hint="Selected: 0 device(s)"
+                    android:enabled="false" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -189,10 +187,5 @@
             android:layout_marginTop="8dp"
             android:text="Save Device" />
 
-
     </LinearLayout>
-
-
 </ScrollView>
-
-    <!-- auto format code keybind  < ctr shift alt l > -->

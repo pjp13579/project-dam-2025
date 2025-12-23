@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.components.EndlessScrollListener
 import com.ipt2025.project_dam.data.api.DevicesAPIService
@@ -21,6 +22,9 @@ class DeviceFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DeviceRecyclerViewAdapter
+
+    private lateinit var btn_add_device : MaterialButton
+
     private var currentPage = 1
     private val PAGE_LIMIT = 20
 
@@ -28,12 +32,11 @@ class DeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout
+        // inflate the layout
         val view = inflater.inflate(R.layout.fragment_device_list, container, false)
 
-        // Find the RecyclerView by ID
         recyclerView = view.findViewById(R.id.list)
-
+        btn_add_device = view.findViewById(R.id.btn_add_device)
         return view
     }
 
@@ -41,6 +44,7 @@ class DeviceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
+        setupClickListeners()
         fetchDevices(currentPage, PAGE_LIMIT)
     }
 
@@ -81,4 +85,15 @@ class DeviceFragment : Fragment() {
             }
         }
     }
+
+
+
+    private fun setupClickListeners() {
+        btn_add_device.setOnClickListener {
+
+            findNavController().navigate(R.id.action_deviceFragment_to_addEditDeviceFragment)
+        }
+    }
+
+
 }

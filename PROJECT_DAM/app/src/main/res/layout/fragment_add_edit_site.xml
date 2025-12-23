@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Site Basic Info -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Address Section -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

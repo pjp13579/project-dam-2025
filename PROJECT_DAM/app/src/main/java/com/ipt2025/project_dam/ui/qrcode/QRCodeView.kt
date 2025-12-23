@@ -89,9 +89,9 @@ class QRCodeView : Fragment() {
                 messageText.text = "Validating code..."
                 progressBar.visibility = View.VISIBLE
 
-                // Validate the scanned ID
+                // Validate the scanned string
                 if (isValidMongoObjectId(scannedId)) {
-                    // Check if device exists in backend
+                    // check if device exists in backend
                     checkDeviceExists(scannedId)
                 } else {
                     progressBar.visibility = View.GONE
@@ -102,7 +102,7 @@ class QRCodeView : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    // Wait a moment and restart camera
+                    // error. wait a 2 seconds and restart camera
                     view?.postDelayed({
                         startQRCodeScan()
                     }, 2000)
