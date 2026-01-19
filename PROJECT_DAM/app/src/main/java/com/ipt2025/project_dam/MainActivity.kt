@@ -79,18 +79,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Handle back button press
+        // Handle back button press - FIXED
         onBackPressedDispatcher.addCallback(this) {
-            when (navController.currentDestination?.id) {
-                R.id.nav_qr -> {
-                    bottomNav.visibility = View.VISIBLE
-                    navController.navigateUp()
-                }
-                R.id.deviceDetailsFragment -> {
-                    navController.navigateUp()
-                }
-                else -> {
+            val navController = (supportFragmentManager
+                .findFragmentById(R.id.main_fragment_container) as NavHostFragment)
+                .navController
+
+            // Try to navigate up first
+            if (!navController.navigateUp()) {
+                // If navigateUp returns false, it means we're at the start destination
+                // Only finish the activity if we're at loginFragment (start destination)
+                if (navController.currentDestination?.id == R.id.loginFragment) {
                     finish()
+                } else {
+                    // Otherwise, navigate to start destination
+                    navController.popBackStack(R.id.loginFragment, false)
                 }
             }
         }
