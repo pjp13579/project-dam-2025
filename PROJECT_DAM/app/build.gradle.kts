@@ -60,4 +60,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.zxing.android.embedded) // qr-code dependency
+    implementation("com.google.code.gson:gson:2.10.1")
 }

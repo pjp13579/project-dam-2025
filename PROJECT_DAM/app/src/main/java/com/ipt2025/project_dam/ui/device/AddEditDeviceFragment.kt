@@ -1,6 +1,7 @@
 package com.ipt2025.project_dam.ui.device
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.DeviceCreateRequest
 import com.ipt2025.project_dam.data.api.DeviceUpdateRequest
@@ -298,6 +300,8 @@ class AddEditDeviceFragment : Fragment() {
                     connectedDevices = selectedConnectedDevices.toList(),
                     isActive = true
                 )
+
+                Log.d("deviceRequest create", Gson().toJson(deviceRequest))
 
                 val response = apiService.createDevice(deviceRequest)
 

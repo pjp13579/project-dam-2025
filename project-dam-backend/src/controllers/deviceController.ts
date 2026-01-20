@@ -13,6 +13,7 @@ import {
 	Tags
 } from 'tsoa';
 import { Device, IDevice } from '../models/device';
+import { Site } from '../models/site';
 
 interface GetIpRequest {
 	_id: string;
@@ -102,6 +103,7 @@ export class DeviceController extends Controller {
 	@Security('jwt', ['admin'])
 	public async createDevice(@Body() requestBody: CreateDeviceRequest): Promise<IDevice> {
 		try {
+			// create and save the device
 			const device = new Device({
 				...requestBody,
 				createdAt: new Date(),
@@ -109,9 +111,18 @@ export class DeviceController extends Controller {
 			});
 			await device.save();
 
+			// update the Site to include this new device (bi-directional relation)
+			if (requestBody.site) {
+				await Site.findByIdAndUpdate(
+					requestBody.site,
+					{ $push: { devicesAtSite: device._id } }
+				);
+			}
+
 			const populatedDevice = await Device.findById(device._id)
 				.populate('site')
 				.populate('connectedDevices');
+
 			if (!populatedDevice) {
 				throw new Error('Failed to create device');
 			}
@@ -153,17 +164,29 @@ export class DeviceController extends Controller {
 	@Delete('{deviceId}')
 	@Security('jwt', ['admin'])
 	public async deleteDevice(@Path() deviceId: string): Promise<{ message: string; }> {
-		const device = await Device.findByIdAndUpdate(
-			{
-				_id: deviceId,
-				isActive: true
-			},
-			{ isActive: false },
-			{ new: true, runValidators: true }
-		);
-		if (!device) {
+
+		const deviceToDelete = await Device.findById(deviceId);
+
+		if (!deviceToDelete) {
 			throw new Error('Device not found');
 		}
+
+		// remove the device reference from the Site's device reference array
+		// this should optimally be done via archived/not archived but that's much work
+		if (deviceToDelete.site) {
+			await Site.findByIdAndUpdate(
+				deviceToDelete.site,
+				{ $pull: { devicesAtSite: deviceToDelete._id } }
+			);
+		}
+
+		// tag device as inactive 
+		await Device.findByIdAndUpdate(
+			{ _id: deviceId },
+			{ isActive: false },
+			{ new: true }
+		);
+
 		return { message: 'Device deleted successfully' };
 	}
 }

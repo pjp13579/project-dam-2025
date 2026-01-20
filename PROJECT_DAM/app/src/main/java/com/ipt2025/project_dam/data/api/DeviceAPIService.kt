@@ -101,8 +101,13 @@ data class DeviceUpdateRequest(
     val connectedDevices: List<String>? = null,
     val isActive: Boolean? = null
 )
+data class DeviceResponseSite(
+    val _id: String,
+    val type: String? = null,
+    val country: String? = null
+)
 
-// Response for create/update - site is just a string ID
+
 data class DeviceCreateUpdateResponse(
     val _id: String,
     val vendor: String,
@@ -112,10 +117,12 @@ data class DeviceCreateUpdateResponse(
     val macAddress: String,
     val state: String,
     val isActive: Boolean,
-    val site: String,  // Site ID as string
+    val site: DeviceResponseSite,
     val createdAt: Date,
     val updatedAt: Date
 )
+
+
 
 interface DevicesAPIService {
     @GET("devices")
