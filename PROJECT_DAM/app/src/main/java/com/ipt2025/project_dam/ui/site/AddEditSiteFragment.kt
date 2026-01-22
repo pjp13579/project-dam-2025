@@ -8,27 +8,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SiteCreateRequest
 import com.ipt2025.project_dam.data.api.SiteUpdateRequest
 import com.ipt2025.project_dam.data.api.SitesAPIService
+import com.ipt2025.project_dam.databinding.FragmentAddEditSiteBinding
 import kotlinx.coroutines.launch
 
 class AddEditSiteFragment : Fragment() {
 
-    private lateinit var etLocalName: TextInputEditText
-    private lateinit var etType: TextInputEditText
-    private lateinit var etCountry: TextInputEditText
-    private lateinit var etStreet: TextInputEditText
-    private lateinit var etCity: TextInputEditText
-    private lateinit var etState: TextInputEditText
-    private lateinit var etZipcode: TextInputEditText
-    private lateinit var etLatitude: TextInputEditText
-    private lateinit var etLongitude: TextInputEditText
-    private lateinit var btnSave: MaterialButton
+    private var _binding: FragmentAddEditSiteBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     private var isEditMode = false
     private var siteId: String? = null
@@ -36,8 +27,9 @@ class AddEditSiteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_site, container, false)
+    ): View {
+        _binding = FragmentAddEditSiteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,18 +41,6 @@ class AddEditSiteFragment : Fragment() {
             siteId = it.getString("_id")
         }
 
-        // Initialize views
-        etLocalName = view.findViewById(R.id.et_local_name)
-        etType = view.findViewById(R.id.et_type)
-        etCountry = view.findViewById(R.id.et_country)
-        etStreet = view.findViewById(R.id.et_street)
-        etCity = view.findViewById(R.id.et_city)
-        etState = view.findViewById(R.id.et_state)
-        etZipcode = view.findViewById(R.id.et_zipcode)
-        etLatitude = view.findViewById(R.id.et_latitude)
-        etLongitude = view.findViewById(R.id.et_longitude)
-        btnSave = view.findViewById(R.id.btn_save)
-
         setupButton()
 
         // If edit mode, load existing data
@@ -70,9 +50,9 @@ class AddEditSiteFragment : Fragment() {
     }
 
     private fun setupButton() {
-        btnSave.text = if (isEditMode) "Update Site" else "Create Site"
+        binding.btnSave.text = if (isEditMode) "Update Site" else "Create Site"
 
-        btnSave.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             if (validateInputs()) {
                 if (isEditMode) {
                     updateSite()
@@ -87,43 +67,43 @@ class AddEditSiteFragment : Fragment() {
         var isValid = true
 
         // Clear previous errors
-        etLocalName.error = null
-        etType.error = null
-        etCountry.error = null
+        binding.etLocalName.error = null
+        binding.etType.error = null
+        binding.etCountry.error = null
 
         // Required fields validation
-        if (etLocalName.text.isNullOrEmpty()) {
-            etLocalName.error = "Local name is required"
+        if (binding.etLocalName.text.isNullOrEmpty()) {
+            binding.etLocalName.error = "Local name is required"
             isValid = false
         }
 
-        if (etType.text.isNullOrEmpty()) {
-            etType.error = "Type is required"
+        if (binding.etType.text.isNullOrEmpty()) {
+            binding.etType.error = "Type is required"
             isValid = false
         }
 
-        if (etCountry.text.isNullOrEmpty()) {
-            etCountry.error = "Country is required"
+        if (binding.etCountry.text.isNullOrEmpty()) {
+            binding.etCountry.error = "Country is required"
             isValid = false
         }
 
         // Address validation (if any field is filled, all must be filled)
         val hasAnyAddressField = listOf(
-            etStreet.text,
-            etCity.text,
-            etState.text,
-            etZipcode.text,
-            etLatitude.text,
-            etLongitude.text
+            binding.etStreet.text,
+            binding.etCity.text,
+            binding.etState.text,
+            binding.etZipcode.text,
+            binding.etLatitude.text,
+            binding.etLongitude.text
         ).any { !it.isNullOrEmpty() }
 
         val hasAllAddressFields = listOf(
-            etStreet.text,
-            etCity.text,
-            etState.text,
-            etZipcode.text,
-            etLatitude.text,
-            etLongitude.text
+            binding.etStreet.text,
+            binding.etCity.text,
+            binding.etState.text,
+            binding.etZipcode.text,
+            binding.etLatitude.text,
+            binding.etLongitude.text
         ).all { !it.isNullOrEmpty() }
 
         if (hasAnyAddressField && !hasAllAddressFields) {
@@ -144,29 +124,29 @@ class AddEditSiteFragment : Fragment() {
 
                 // Prepare address (optional)
                 val address = if (
-                    !etStreet.text.isNullOrEmpty() &&
-                    !etCity.text.isNullOrEmpty() &&
-                    !etState.text.isNullOrEmpty() &&
-                    !etZipcode.text.isNullOrEmpty() &&
-                    !etLatitude.text.isNullOrEmpty() &&
-                    !etLongitude.text.isNullOrEmpty()
+                    !binding.etStreet.text.isNullOrEmpty() &&
+                    !binding.etCity.text.isNullOrEmpty() &&
+                    !binding.etState.text.isNullOrEmpty() &&
+                    !binding.etZipcode.text.isNullOrEmpty() &&
+                    !binding.etLatitude.text.isNullOrEmpty() &&
+                    !binding.etLongitude.text.isNullOrEmpty()
                 ) {
                     com.ipt2025.project_dam.data.api.SiteAddressRequest(
-                        street = etStreet.text.toString(),
-                        city = etCity.text.toString(),
-                        state = etState.text.toString(),
-                        zipCode = etZipcode.text.toString(),
-                        latitude = etLatitude.text.toString().toFloat(),
-                        longitude = etLongitude.text.toString().toFloat()
+                        street = binding.etStreet.text.toString(),
+                        city = binding.etCity.text.toString(),
+                        state = binding.etState.text.toString(),
+                        zipCode = binding.etZipcode.text.toString(),
+                        latitude = binding.etLatitude.text.toString().toFloat(),
+                        longitude = binding.etLongitude.text.toString().toFloat()
                     )
                 } else {
                     null
                 }
 
                 val siteRequest = SiteCreateRequest(
-                    localName = etLocalName.text.toString(),
-                    type = etType.text.toString(),
-                    country = etCountry.text.toString(),
+                    localName = binding.etLocalName.text.toString(),
+                    type = binding.etType.text.toString(),
+                    country = binding.etCountry.text.toString(),
                     address = address,
                     devicesAtSite = emptyList(), // Empty for new site
                     isActive = true
@@ -195,29 +175,29 @@ class AddEditSiteFragment : Fragment() {
                 siteId?.let { id ->
                     // Prepare address (optional)
                     val address = if (
-                        !etStreet.text.isNullOrEmpty() &&
-                        !etCity.text.isNullOrEmpty() &&
-                        !etState.text.isNullOrEmpty() &&
-                        !etZipcode.text.isNullOrEmpty() &&
-                        !etLatitude.text.isNullOrEmpty() &&
-                        !etLongitude.text.isNullOrEmpty()
+                        !binding.etStreet.text.isNullOrEmpty() &&
+                        !binding.etCity.text.isNullOrEmpty() &&
+                        !binding.etState.text.isNullOrEmpty() &&
+                        !binding.etZipcode.text.isNullOrEmpty() &&
+                        !binding.etLatitude.text.isNullOrEmpty() &&
+                        !binding.etLongitude.text.isNullOrEmpty()
                     ) {
                         com.ipt2025.project_dam.data.api.SiteAddressRequest(
-                            street = etStreet.text.toString(),
-                            city = etCity.text.toString(),
-                            state = etState.text.toString(),
-                            zipCode = etZipcode.text.toString(),
-                            latitude = etLatitude.text.toString().toFloat(),
-                            longitude = etLongitude.text.toString().toFloat()
+                            street = binding.etStreet.text.toString(),
+                            city = binding.etCity.text.toString(),
+                            state = binding.etState.text.toString(),
+                            zipCode = binding.etZipcode.text.toString(),
+                            latitude = binding.etLatitude.text.toString().toFloat(),
+                            longitude = binding.etLongitude.text.toString().toFloat()
                         )
                     } else {
                         null
                     }
 
                     val siteRequest = SiteUpdateRequest(
-                        localName = etLocalName.text.toString(),
-                        type = etType.text.toString(),
-                        country = etCountry.text.toString(),
+                        localName = binding.etLocalName.text.toString(),
+                        type = binding.etType.text.toString(),
+                        country = binding.etCountry.text.toString(),
                         address = address,
                         isActive = true
                     )
@@ -245,18 +225,18 @@ class AddEditSiteFragment : Fragment() {
                 val response = apiService.getSiteDetails(siteId)
 
                 // Populate fields with existing data
-                etLocalName.setText(response.localName)
-                etType.setText(response.type)
-                etCountry.setText(response.country)
+                binding.etLocalName.setText(response.localName)
+                binding.etType.setText(response.type)
+                binding.etCountry.setText(response.country)
 
                 // Populate address if exists
                 response.address?.let { address ->
-                    etStreet.setText(address.street)
-                    etCity.setText(address.city)
-                    etState.setText(address.state)
-                    etZipcode.setText(address.zipCode)
-                    etLatitude.setText(address.latitude.toString())
-                    etLongitude.setText(address.longitude.toString())
+                    binding.etStreet.setText(address.street)
+                    binding.etCity.setText(address.city)
+                    binding.etState.setText(address.state)
+                    binding.etZipcode.setText(address.zipCode)
+                    binding.etLatitude.setText(address.latitude.toString())
+                    binding.etLongitude.setText(address.longitude.toString())
                 }
 
             } catch (e: Exception) {
@@ -264,5 +244,10 @@ class AddEditSiteFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to load site data", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

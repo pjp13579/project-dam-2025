@@ -6,18 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SiteDeviceDataResponse
 import com.ipt2025.project_dam.data.api.SitesAPIService
+import com.ipt2025.project_dam.databinding.FragmentDeviceListItemBinding
 import com.ipt2025.project_dam.databinding.FragmentSiteDetailsBinding
 import kotlinx.coroutines.launch
 
@@ -25,9 +24,6 @@ class SiteDetailsFragment : Fragment() {
     private var _binding: FragmentSiteDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SiteDetailsViewModel by viewModels()
-    private lateinit var btnEdit: MaterialButton
-    private lateinit var btnDelete: MaterialButton
-    private lateinit var rvDevices: RecyclerView
 
     // We'll use this for our inline adapter
     private var devices = listOf<SiteDeviceDataResponse>()
@@ -41,17 +37,11 @@ class SiteDetailsFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Get siteId from arguments
         siteId = arguments?.getString("_id") ?: return
-
-        // Initialize views
-        btnEdit = view.findViewById(R.id.btn_edit_site)
-        btnDelete = view.findViewById(R.id.btn_delete_site)
-        rvDevices = view.findViewById(R.id.rv_devices)
 
         // setup RecyclerView with inline adapter
         setupDeviceList()
@@ -63,31 +53,31 @@ class SiteDetailsFragment : Fragment() {
         setupClickListeners()
     }
 
-
     private fun setupDeviceList() {
         // INLINE ADAPTER: Defined right here in the fragment
         val deviceAdapter = object : RecyclerView.Adapter<DeviceViewHolder>() {
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.fragment_device_list_item, parent, false)
-                return DeviceViewHolder(view)
+                // Inflate using the binding class for the list item
+                val binding = FragmentDeviceListItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                return DeviceViewHolder(binding)
             }
 
             override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
                 val device = devices[position]
 
-                // Set device data to views
-                holder.tvDeviceType.text = device.type
-                holder.tvDeviceSerial.text = device.serialNumber
-                holder.tvDeviceState.text = device.state
-
-                // Optional: Set vendor as tooltip or subtitle
-                // You can add a TextView for vendor if needed
+                // Set device data to views using binding
+                holder.binding.deviceType.text = device.type
+                holder.binding.deviceSerialNumber.text = device.serialNumber
+                holder.binding.deviceState.text = device.state
 
                 holder.itemView.setOnClickListener {
                     val bundle = Bundle().apply {
-                        putString("_id", device._id)  // Make sure it's "_id" not "deviceId"
+                        putString("_id", device._id)
                     }
                     findNavController().navigate(R.id.action_siteDetailsFragment_to_deviceDetailsFragment, bundle)
                 }
@@ -96,17 +86,12 @@ class SiteDetailsFragment : Fragment() {
             override fun getItemCount(): Int = devices.size
         }
 
-        rvDevices.layoutManager = LinearLayoutManager(context)
-        rvDevices.adapter = deviceAdapter
+        binding.rvDevices.layoutManager = LinearLayoutManager(context)
+        binding.rvDevices.adapter = deviceAdapter
     }
 
-
-    private class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvDeviceType: TextView = itemView.findViewById(R.id.device_type)
-        val tvDeviceSerial: TextView = itemView.findViewById(R.id.device_serialNumber)
-        val tvDeviceState: TextView = itemView.findViewById(R.id.device_state)
-    }
-
+    // ViewHolder now accepts the Binding object
+    private class DeviceViewHolder(val binding: FragmentDeviceListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     private fun loadSiteDetails() {
         val apiService = RetrofitProvider.create(SitesAPIService::class.java)
@@ -129,7 +114,7 @@ class SiteDetailsFragment : Fragment() {
                         // update device list
                         site.devicesAtSite?.let { deviceList ->
                             devices = deviceList
-                            rvDevices.adapter?.notifyDataSetChanged()
+                            binding.rvDevices.adapter?.notifyDataSetChanged()
 
                             // Optional: Show/hide empty state
                             if (deviceList.isEmpty()) {
@@ -147,15 +132,12 @@ class SiteDetailsFragment : Fragment() {
         }
     }
 
-
     private fun showEmptyDevicesState() {
-
         println("No devices at this site")
     }
 
-
     private fun setupClickListeners() {
-        btnEdit.setOnClickListener {
+        binding.btnEditSite.setOnClickListener {
             siteId?.let { id ->
                 val bundle = Bundle().apply {
                     putString("_id", id)
@@ -165,11 +147,10 @@ class SiteDetailsFragment : Fragment() {
             }
         }
 
-        btnDelete.setOnClickListener {
+        binding.btnDeleteSite.setOnClickListener {
             showDeleteConfirmationDialog()
         }
     }
-
 
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
@@ -181,7 +162,6 @@ class SiteDetailsFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .show()
     }
-
 
     private fun deleteSite() {
         lifecycleScope.launch {
@@ -197,7 +177,6 @@ class SiteDetailsFragment : Fragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

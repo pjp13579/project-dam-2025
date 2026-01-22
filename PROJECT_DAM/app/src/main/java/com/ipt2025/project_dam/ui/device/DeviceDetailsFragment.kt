@@ -11,7 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.DeviceDetailDataResponse
 import com.ipt2025.project_dam.data.api.DevicesAPIService
@@ -26,8 +25,6 @@ class DeviceDetailsFragment : Fragment() {
     private lateinit var adapter: DeviceDetailsConnectedDevicesAdapter
     private val viewModel: DeviceDetailsViewModel by viewModels()
     private var deviceId: String? = null
-    private lateinit var btnEditDevice: MaterialButton
-    private lateinit var btnDeleteDevice: MaterialButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,10 +46,6 @@ class DeviceDetailsFragment : Fragment() {
             return
         }
 
-        // Initialize buttons
-        btnEditDevice = view.findViewById(R.id.btn_edit_device)
-        btnDeleteDevice = view.findViewById(R.id.btn_delete_device)
-
         setupUI()
         loadDeviceDetails()
     }
@@ -69,12 +62,12 @@ class DeviceDetailsFragment : Fragment() {
         }
 
         // Setup edit button
-        btnEditDevice.setOnClickListener {
+        binding.btnEditDevice.setOnClickListener {
             navigateToEditDevice()
         }
 
         // Setup delete button
-        btnDeleteDevice.setOnClickListener {
+        binding.btnDeleteDevice.setOnClickListener {
             showDeleteConfirmationDialog()
         }
 
@@ -174,7 +167,6 @@ class DeviceDetailsFragment : Fragment() {
         binding.state.text = ctx.getString(R.string.label_state).replace("{value}", device.state)
 
         // Site information
-
         binding.siteType.text = ctx.getString(R.string.label_site_type).replace("{value}", device.site.type)
         binding.siteCountry.text = ctx.getString(R.string.label_country).replace("{value}", device.site.country)
         binding.siteCity.text = ctx.getString(R.string.label_city).replace("{value}", device.site.address.city)

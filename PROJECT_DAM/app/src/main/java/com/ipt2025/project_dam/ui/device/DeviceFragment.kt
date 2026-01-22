@@ -10,21 +10,19 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.components.EndlessScrollListener
 import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
+import com.ipt2025.project_dam.databinding.FragmentDeviceListBinding
 import kotlinx.coroutines.launch
 
 class DeviceFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentDeviceListBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: DeviceRecyclerViewAdapter
-
-    private lateinit var btn_add_device : MaterialButton
-
     private var currentPage = 1
     private val PAGE_LIMIT = 20
 
@@ -32,12 +30,8 @@ class DeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // inflate the layout
-        val view = inflater.inflate(R.layout.fragment_device_list, container, false)
-
-        recyclerView = view.findViewById(R.id.list)
-        btn_add_device = view.findViewById(R.id.btn_add_device)
-        return view
+        _binding = FragmentDeviceListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,35 +43,32 @@ class DeviceFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.list.layoutManager = LinearLayoutManager(context)
         adapter = DeviceRecyclerViewAdapter(mutableListOf()) { device ->
             val bundle = bundleOf("_id" to device._id)
             findNavController().navigate(R.id.action_deviceFragment_to_deviceDetailsFragment, bundle)
         }
 
-        recyclerView.addOnScrollListener(object : EndlessScrollListener() {
+        binding.list.addOnScrollListener(object : EndlessScrollListener() {
             override fun onLoadMore(page: Int) {
                 currentPage++
                 fetchDevices(currentPage, PAGE_LIMIT)
             }
         })
 
-        recyclerView.adapter = adapter
+        binding.list.adapter = adapter
     }
 
     private fun fetchDevices(page: Int, limit: Int) {
-        //Toast.makeText(context, "Fetching devices...", Toast.LENGTH_SHORT).show()
-
         val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
 
         lifecycleScope.launch {
             try {
                 val response = apiService.getDevices(page = page, limit = limit)
-                //Toast.makeText(context, "Found ${response.devices.size} devices", Toast.LENGTH_SHORT).show()
-
                 adapter.addDevices(response.devices)
 
-                recyclerView.adapter = adapter
+                // If you are re-assigning adapter (usually not recommended, but keeping your logic):
+                binding.list.adapter = adapter
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -86,14 +77,14 @@ class DeviceFragment : Fragment() {
         }
     }
 
-
-
     private fun setupClickListeners() {
-        btn_add_device.setOnClickListener {
-
+        binding.btnAddDevice.setOnClickListener {
             findNavController().navigate(R.id.action_deviceFragment_to_addEditDeviceFragment)
         }
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
