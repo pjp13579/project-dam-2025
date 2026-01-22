@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Device Information"
+            android:text="@string/title_device_information"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -28,7 +28,7 @@
                 android:id="@+id/et_vendor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Vendor *"
+                android:hint="@string/hint_vendor"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -43,7 +43,7 @@
                 android:id="@+id/et_device_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type *"
+                android:hint="@string/hint_type"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -59,7 +59,7 @@
                 android:id="@+id/et_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Category *"
+                android:hint="@string/hint_category"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -74,7 +74,7 @@
                 android:id="@+id/et_serial_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Serial Number *"
+                android:hint="@string/hint_serial_number"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +89,7 @@
                 android:id="@+id/et_device_mac_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="MAC Address *"
+                android:hint="@string/hint_mac_address"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -104,7 +104,7 @@
                 android:id="@+id/et_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="State *"
+                android:hint="@string/hint_state"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -120,7 +120,7 @@
                 android:id="@+id/actv_site"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select Site *"
+                android:hint="@string/hint_select_site"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -129,7 +129,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connected Devices"
+            android:text="@string/title_connected_devices"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -158,7 +158,7 @@
                         android:id="@+id/et_search_connected"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Search devices..."
+                        android:hint="@string/hint_search_devices"
                         android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -174,7 +174,7 @@
                     android:id="@+id/tv_selected_device_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Selected: 0 device(s)"
+                    android:hint="@string/label_selected_devices"
                     android:enabled="false" />
 
             </LinearLayout>
@@ -185,7 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Save Device" />
+            android:text="@string/button_save_device" />
 
     </LinearLayout>
 </ScrollView>

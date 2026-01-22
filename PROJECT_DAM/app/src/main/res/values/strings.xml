@@ -48,4 +48,25 @@
     <string name="button_register_new_device">Register New Device</string>
     <string name="button_register_new_site">Register New Site</string>
     <string name="edit">Edit</string>
+    <string name="hint_vendor">Vendor *</string>
+    <string name="hint_type">Type *</string>
+    <string name="hint_category">Category *</string>
+    <string name="hint_serial_number">Serial Number *</string>
+    <string name="hint_mac_address">MAC Address *</string>
+    <string name="hint_state">State *</string>
+    <string name="hint_select_site">Select Site *</string>
+    <string name="hint_search_devices">Search devices…</string>
+    <string name="button_save_device">Save Device</string>
+    <string name="label_selected_devices">Selected: {value} device(s)</string>
+    <string name="hint_local_name">Local Name *</string>
+    <string name="hint_country">Country *</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_street">Street *</string>
+    <string name="hint_city">City *</string>
+    <string name="hint_state_province">State/Province *</string>
+    <string name="hint_zip_code">ZIP Code *</string>
+    <string name="hint_latitude">Latitude *</string>
+    <string name="hint_longitude">Longitude *</string>
+    <string name="save">Save</string>
+    <string name="label_devices_at_this_site">Devices at this Site</string>
 </resources>

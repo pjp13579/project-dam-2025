@@ -17,13 +17,13 @@
             android:id="@+id/site_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sites" />
+            android:text="@string/title_site" />
 
         <Button
             android:id="@+id/device_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Devices" />
+            android:text="@string/title_devices" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

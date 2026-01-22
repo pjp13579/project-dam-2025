@@ -35,7 +35,7 @@
                     android:id="@+id/site_detail_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Type"
+                    android:text="@string/label_type"
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
@@ -43,7 +43,7 @@
                     android:id="@+id/site_detail_country"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Country"
+                    android:text="@string/label_country"
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Devices at this Site"
+                    android:text="@string/label_devices_at_this_site"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginTop="16dp"
