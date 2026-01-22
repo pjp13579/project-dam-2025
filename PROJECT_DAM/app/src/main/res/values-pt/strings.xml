@@ -22,7 +22,7 @@
     <string name="cancel">Cancelar</string>
     <string name="success_delete_device">Dispositivo excluído com sucesso</string>
     <string name="fail_delete_device">Falhou em deletar o dispositivo</string>
-    <string name="error">Erro: {erro}</string>
+    <string name="error">Erro: {error}</string>
     <string name="label_vendor">Vendor: {value}</string>
     <string name="label_category">Categoria: {value}</string>
     <string name="label_type">Tipo: {value}</string>
