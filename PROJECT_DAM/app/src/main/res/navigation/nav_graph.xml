@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
+
+    <action
+        android:id="@+id/action_to_QRCodeView"
+        app:destination="@id/QRCodeView" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.ipt2025.project_dam.ui.login.LoginFragment"
@@ -26,9 +30,6 @@
         <action
             android:id="@+id/action_dashboard_to_deviceFragment"
             app:destination="@id/deviceFragment" />
-        <action
-            android:id="@+id/action_dashboard_to_QRCodeView"
-            app:destination="@id/QRCodeView" />
     </fragment>
     <fragment
         android:id="@+id/siteFragment"

@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_qr -> {
-                    navController.navigate(R.id.action_dashboard_to_QRCodeView)
+                    navController.navigate(R.id.action_to_QRCodeView)
                     true
                 }
                 R.id.nav_logout -> {
