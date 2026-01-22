@@ -44,7 +44,7 @@ class DeviceDetailsFragment : Fragment() {
         deviceId = arguments?.getString("_id")
 
         if (deviceId == null || deviceId.isNullOrEmpty()) {
-            showErrorMessage("No device ID provided")
+            showErrorMessage(requireContext().getString(R.string.error_device_id))
             setupRetryButton()
             return
         }
@@ -99,12 +99,12 @@ class DeviceDetailsFragment : Fragment() {
 
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Device")
-            .setMessage("Are you sure you want to delete this device?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle(requireContext().getString(R.string.alert_delete_device))
+            .setMessage(requireContext().getString(R.string.alert_delete_device_description))
+            .setPositiveButton(requireContext().getString(R.string.delete)) { _, _ ->
                 deleteDevice()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(requireContext().getString(R.string.cancel), null)
             .show()
     }
 
@@ -116,10 +116,10 @@ class DeviceDetailsFragment : Fragment() {
                     val response = apiService.deleteDevice(id)
 
                     if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), "Device deleted successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), requireContext().getString(R.string.success_delete_device), Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack()
                     } else {
-                        Toast.makeText(requireContext(), "Failed to delete device", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), requireContext().getString(R.string.fail_delete_device), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -165,20 +165,22 @@ class DeviceDetailsFragment : Fragment() {
 
     private fun displayDeviceData(device: DeviceDetailDataResponse) {
         // Device information
-        binding.vendor.text = "Vendor: ${device.vendor}"
-        binding.category.text = "Category: ${device.category}"
-        binding.deviceTypeInfo.text = "Type: ${device.type}"
-        binding.serialNumber.text = "Serial Number: ${device.serialNumber}"
-        binding.MacAddress.text = "MAC Address: ${device.macAddress}"
-        binding.state.text = "State: ${device.state}"
+        val ctx = requireContext()
+        binding.vendor.text = ctx.getString(R.string.label_vendor).replace("{value}", device.vendor)
+        binding.category.text = ctx.getString(R.string.label_category).replace("{value}", device.category)
+        binding.deviceTypeInfo.text = ctx.getString(R.string.label_type).replace("{value}", device.type)
+        binding.serialNumber.text = ctx.getString(R.string.label_serial_number).replace("{value}", device.serialNumber)
+        binding.MacAddress.text = ctx.getString(R.string.label_mac_address).replace("{value}", device.macAddress)
+        binding.state.text = ctx.getString(R.string.label_state).replace("{value}", device.state)
 
         // Site information
-        binding.siteType.text = "Site Type: ${device.site.type}"
-        binding.siteCountry.text = "Country: ${device.site.country}"
-        binding.siteCity.text = "City: ${device.site.address.city}"
-        binding.siteState.text = "State: ${device.site.address.state}"
-        binding.siteStreet.text = "Street: ${device.site.address.street}"
-        binding.siteZipcode.text = "Zip Code: ${device.site.address.zipCode}"
+
+        binding.siteType.text = ctx.getString(R.string.label_site_type).replace("{value}", device.site.type)
+        binding.siteCountry.text = ctx.getString(R.string.label_country).replace("{value}", device.site.country)
+        binding.siteCity.text = ctx.getString(R.string.label_city).replace("{value}", device.site.address.city)
+        binding.siteState.text = ctx.getString(R.string.label_state).replace("{value}", device.site.address.state)
+        binding.siteStreet.text = ctx.getString(R.string.label_street).replace("{value}", device.site.address.street)
+        binding.siteZipcode.text = ctx.getString(R.string.label_zip_code).replace("{value}", device.site.address.zipCode)
 
         // Connected devices
         adapter.setConnectedDevices(device.connectedDevices)

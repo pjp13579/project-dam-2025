@@ -175,7 +175,7 @@ class SiteDetailsFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Site")
             .setMessage("Are you sure you want to delete this site?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setPositiveButton("@string/delete") { _, _ ->
                 deleteSite()
             }
             .setNegativeButton("Cancel", null)

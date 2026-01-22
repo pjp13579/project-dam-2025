@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.ipt2025.project_dam.ui.login.LoginFragment"
-        android:label="Login"
+        android:label="@string/title_login"
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_dashboard"
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/dashboard"
         android:name="com.ipt2025.project_dam.Dashboard"
-        android:label="Dashboard"
+        android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboard_to_siteFragment"
@@ -48,7 +48,7 @@
     <fragment
         android:id="@+id/siteDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteDetailsFragment"
-        android:label="Site"
+        android:label="@string/title_site"
         tools:layout="@layout/fragment_site_details">
         <argument
             android:name="_id"
@@ -69,7 +69,7 @@
     <fragment
         android:id="@+id/deviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceFragment"
-        android:label="Devices"
+        android:label="@string/title_devices"
         tools:layout="@layout/fragment_device_list">
         <action
             android:id="@+id/action_deviceFragment_to_deviceDetailsFragment"
@@ -84,7 +84,7 @@
     <fragment
         android:id="@+id/deviceDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.device.DeviceDetailsFragment"
-        android:label="Device"
+        android:label="@string/title_device"
         tools:layout="@layout/fragment_device_detail">
         <action
             android:id="@+id/action_deviceDetailsFragment_to_dashboard"
@@ -96,7 +96,7 @@
     <fragment
         android:id="@+id/addEditSiteFragment"
         android:name="com.ipt2025.project_dam.ui.site.AddEditSiteFragment"
-        android:label="Add/Edit Site"
+        android:label="@string/title_site_add_edit"
         tools:layout="@layout/fragment_add_edit_site">
         <argument
             android:name="_id"
@@ -113,7 +113,7 @@
     <fragment
         android:id="@+id/QRCodeView"
         android:name="com.ipt2025.project_dam.ui.qrcode.QRCodeView"
-        android:label="Device QR Code">
+        android:label="@string/title_qr_code">
         <action
             android:id="@+id/action_QRCodeView_to_deviceDetailsFragment"
             app:destination="@id/deviceDetailsFragment" />
@@ -122,7 +122,7 @@
     <fragment
         android:id="@+id/addEditDeviceFragment"
         android:name="com.ipt2025.project_dam.ui.device.AddEditDeviceFragment"
-        android:label="Device"
+        android:label="@string/title_device"
         tools:layout="@layout/fragment_add_edit_device">
         <argument
             android:name="_id"
