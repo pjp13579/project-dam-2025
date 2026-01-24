@@ -69,4 +69,8 @@
     <string name="hint_longitude">Longitude *</string>
     <string name="save">Guardar</string>
     <string name="label_devices_at_this_site">Dispositivos neste Local</string>
+    <string name="delete_site">Eliminar Local</string>
+    <string name="delete_site_label">Tem a certeza que quer eliminar este local?</string>
+    <string name="site_empty">Este local não tem dispositivos</string>
+    <string name="loading">Carregando…</string>
 </resources>

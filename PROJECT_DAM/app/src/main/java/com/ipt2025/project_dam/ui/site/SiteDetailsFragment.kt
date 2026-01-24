@@ -103,7 +103,7 @@ class SiteDetailsFragment : Fragment() {
             viewModel.uiState.collect { state ->
                 when (state) {
                     is SiteDetailUiState.Loading -> {
-                        binding.siteDetailName.text = "Loading..."
+                        binding.siteDetailName.text = requireContext().getString(R.string.loading)
                     }
                     is SiteDetailUiState.Success -> {
                         val site = state.site
@@ -154,12 +154,12 @@ class SiteDetailsFragment : Fragment() {
 
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Site")
-            .setMessage("Are you sure you want to delete this site?")
-            .setPositiveButton("@string/delete") { _, _ ->
+            .setTitle(requireContext().getString(R.string.delete_site))
+            .setMessage(requireContext().getString(R.string.delete_site_label))
+            .setPositiveButton(requireContext().getString(R.string.delete)) { _, _ ->
                 deleteSite()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(requireContext().getString(R.string.cancel), null)
             .show()
     }
 
