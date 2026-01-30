@@ -2,7 +2,6 @@ package com.ipt2025.project_dam.ui.site
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ipt2025.project_dam.data.SitesRepository
 import com.ipt2025.project_dam.data.api.SiteDetailResponse
 import com.ipt2025.project_dam.data.api.SitesAPIService
 import kotlinx.coroutines.flow.MutableStateFlow

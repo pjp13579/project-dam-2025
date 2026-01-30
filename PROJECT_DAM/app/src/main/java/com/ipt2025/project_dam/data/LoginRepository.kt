@@ -9,12 +9,16 @@ import retrofit2.Retrofit
  * maintains an in-memory cache of login status and user credentials information.
  */
 
+/**
+ * middleman between the ui and data source, holds the user state
+ */
 class LoginRepository(val dataSource: LoginDataSource) {
 
     // in-memory cache of the loggedInUser object
     var user: UserLoginResponse? = null
         private set
 
+    // check if we are currently logged in
     val isLoggedIn: Boolean
         get() = user != null
 
@@ -29,17 +33,19 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.logout()
     }
 
+    // tries to login via the datasource
     suspend fun login(username: String, password: String): Result<UserLoginResponse> {
-        // handle login
+        // // preform login network API request
         val result = dataSource.login(username, password)
 
+        // if it worked, save the user to our local cache
         if (result is Result.Success) {
             setLoggedInUser(result.data)
         }
-
         return result
     }
 
+    // saves user info to the provider so other calls can use the token
     private fun setLoggedInUser(loggedInUser: UserLoginResponse) {
         this.user = loggedInUser
         RetrofitProvider.setLoggedInUser(loggedInUser);

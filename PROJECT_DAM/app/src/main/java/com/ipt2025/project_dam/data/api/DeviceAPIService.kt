@@ -24,7 +24,7 @@ data class DeviceDataResponse(
     val serialNumber: String,
     val macAddress: String,
     val state: String,
-    val site: String,  // Site ID as string in list view
+    val site: String,  // Site Document Mongo OID
     val isActive: Boolean,
     val createdAt: Date,
     val updatedAt: Date
@@ -39,7 +39,7 @@ data class DeviceDetailDataResponse(
     val macAddress: String,
     val state: String,
     val isActive: Boolean,
-    val site: DeviceDetailSiteResponse,  // Full site object in detail view
+    val site: DeviceDetailSiteResponse,
     val connectedDevices: List<DeviceDetailsConnectedDeviceResponse>,
     val createdAt: Date,
     val updatedAt: Date
@@ -123,15 +123,17 @@ data class DeviceCreateUpdateResponse(
 )
 
 
-
+// interface defining all the rest api calls for devices
 interface DevicesAPIService {
+    // gets a paginated list of devices
     @GET("devices")
     suspend fun getDevices(@Query("page") page: Int, @Query("limit") limit: Int): DevicesResponse
 
+    // gets full details for one specific device
     @GET("devices/{deviceId}")
     suspend fun getDeviceDetails(@Path("deviceId") deviceId: String?): DeviceDetailDataResponse
 
-    // Create device - expects site as String ID
+    // creates a new device. expects the site to be just the id string
     @POST("devices")
     suspend fun createDevice(@Body device: DeviceCreateRequest): Response<DeviceCreateUpdateResponse>
 

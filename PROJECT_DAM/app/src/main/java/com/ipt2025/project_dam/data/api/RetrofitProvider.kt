@@ -7,33 +7,44 @@ import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * singleton object that configures the http client
+ *
+ * inject JWT token into header
+ */
 object RetrofitProvider {
     private var authToken: String? = null
     private var user : UserData? = null
 
+    // stores the token in memory
     fun updateToken(token: String) {
         authToken = token
     }
 
+    // fetch token
     fun getToken() : String?{
         return authToken;
     }
 
+    // wipe token
     fun clearToken() {
         authToken = null
     }
 
+    // after successful login, store the provided login/access token
     fun setLoggedInUser(loggedInUser: UserLoginResponse){
         authToken = loggedInUser.token
         user = loggedInUser.user
     }
 
+    // sets up retrofit with a custom interceptor (automatically inject JWT auth token into request header)
     fun <T> create(service: Class<T>): T {
         val client = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
                 val builder = original.newBuilder()
 
+                // injects the bearer token into every request header if we have one
                 authToken?.let {
                     builder.addHeader("Authorization", "Bearer $it")
                 }

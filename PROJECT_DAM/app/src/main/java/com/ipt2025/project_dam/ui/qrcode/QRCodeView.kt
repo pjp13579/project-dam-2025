@@ -23,9 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 
+// fragment that handles the camera to scan device qr codes and validate them
 class QRCodeView : Fragment() {
 
-    private lateinit var progressBar: ProgressBar
     private lateinit var messageText: TextView
 
     override fun onCreateView(
@@ -34,11 +34,10 @@ class QRCodeView : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_qrcode, container, false)
 
-        progressBar = view.findViewById(R.id.progressBar)
         messageText = view.findViewById(R.id.messageText)
 
-        // Show initial message
-        messageText.text = "Preparing camera..."
+        // show a status update while zxing loads things up
+        messageText.text = "Preparing camera"
 
         return view
     }
@@ -46,26 +45,26 @@ class QRCodeView : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Start camera immediately when fragment is ready
+        // start camera
         startCamera()
     }
 
     override fun onResume() {
         super.onResume()
-        // If we come back to this fragment (e.g., from denied permission dialog),
-        // try to start camera again
+        // // if we came back from settings or a dialog, try to start the camera again
         if (!isCameraPermissionGranted()) {
             startCamera()
         }
     }
 
+    // checks permissions before actually launching the scanner
     private fun startCamera() {
         checkCameraPermission()
     }
 
+    // configures the zxing scanner options
     private fun startQRCodeScan() {
-        // Hide progress bar, show scanning message
-        progressBar.visibility = View.GONE
+
         messageText.text = "Point camera at QR code"
 
         val integrator = IntentIntegrator.forSupportFragment(this)
@@ -78,23 +77,26 @@ class QRCodeView : Fragment() {
         integrator.initiateScan()
     }
 
+    // handles what happens after the camera closes
+    // validates the read object
+    // validates if the read object is a valid mongo object id
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
-                // User cancelled scanning, navigate back
+                // null reading. go back to previous fragment. exit camera fragment
                 findNavController().navigateUp()
             } else {
                 val scannedId = result.contents.trim()
                 messageText.text = "Validating code..."
-                progressBar.visibility = View.VISIBLE
 
-                // Validate the scanned string
+                // validate the scanned string format
                 if (isValidMongoObjectId(scannedId)) {
                     // check if device exists in backend
+                    // if exists navigate to device details fragment
+                    // if not exists, display invalid reading and camera will reopen shortly (or it should at least lol)
                     checkDeviceExists(scannedId)
                 } else {
-                    progressBar.visibility = View.GONE
                     messageText.text = "Invalid QR code format"
                     Toast.makeText(
                         requireContext(),
@@ -102,7 +104,7 @@ class QRCodeView : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    // error. wait a 2 seconds and restart camera
+                    // invalid reading. wait a 2 seconds and reopen camera for new reading
                     view?.postDelayed({
                         startQRCodeScan()
                     }, 2000)
@@ -113,12 +115,15 @@ class QRCodeView : Fragment() {
         }
     }
 
+    // validates if string if a valid mongo object id
     private fun isValidMongoObjectId(id: String): Boolean {
         // MongoDB ObjectID is 24 hex characters
         val mongoIdPattern = Pattern.compile("^[0-9a-fA-F]{24}$")
         return mongoIdPattern.matcher(id).matches()
     }
 
+    // verifies if mongo id matches a existing device
+    // if not valid, don't navigate user to device details fragment
     private fun checkDeviceExists(deviceId: String) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
@@ -127,7 +132,7 @@ class QRCodeView : Fragment() {
                 val exists = withContext(Dispatchers.IO) {
                     try {
                         val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
-                        // This will throw an exception if device doesn't exist (404)
+                        // getDeviceDetails() will throw an exception if device doesn't exist (404)
                         apiService.getDeviceDetails(deviceId)
                         true
                     } catch (e: Exception) {
@@ -135,10 +140,9 @@ class QRCodeView : Fragment() {
                     }
                 }
 
-                progressBar.visibility = View.GONE
 
                 if (exists) {
-                    // Navigate to device details fragment
+                    // Device exists, navigate to device details fragment
                     val bundle = Bundle().apply {
                         putString("_id", deviceId)
                     }
@@ -147,6 +151,7 @@ class QRCodeView : Fragment() {
                         bundle
                     )
                 } else {
+                    // id format was right, but device isn't in db
                     messageText.text = "Device not found"
                     Toast.makeText(
                         requireContext(),
@@ -160,7 +165,7 @@ class QRCodeView : Fragment() {
                     }, 2000)
                 }
             } catch (e: Exception) {
-                progressBar.visibility = View.GONE
+                // general failure. something somewhere broke
                 messageText.text = "Connection error"
                 Toast.makeText(
                     requireContext(),
@@ -193,7 +198,7 @@ class QRCodeView : Fragment() {
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
-
+/*
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -205,7 +210,6 @@ class QRCodeView : Fragment() {
                 startQRCodeScan()
             } else {
                 // Permission denied
-                progressBar.visibility = View.GONE
                 messageText.text = "Camera permission required"
 
                 Toast.makeText(
@@ -222,6 +226,8 @@ class QRCodeView : Fragment() {
             }
         }
     }
+
+ */
 
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 1001

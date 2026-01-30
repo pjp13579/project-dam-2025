@@ -73,4 +73,5 @@
     <string name="delete_site_label">Tem a certeza que quer eliminar este local?</string>
     <string name="site_empty">Este local não tem dispositivos</string>
     <string name="loading">Carregando…</string>
+    <string name="preparing_camera">Preparando a camera…</string>
 </resources>

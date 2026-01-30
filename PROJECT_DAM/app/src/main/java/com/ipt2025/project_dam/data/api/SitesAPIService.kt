@@ -72,30 +72,12 @@ data class SiteCreateRequest(
     val isActive: Boolean
 )
 
-data class CreateSiteAddressRequest(
-    val street : String,
-    val city : String,
-    val state : String,
-    val zipCode: String,
-    val latitude: Float,
-    val longitude: Float
-)
-
 data class SiteUpdateRequest(
     val localName: String? = null,
     val type: String? = null,
     val country: String? = null,
     val address: SiteAddressRequest? = null,
     val isActive: Boolean
-)
-
-data class UpdateSiteAddressRequest(
-    val street : String,
-    val city : String,
-    val state : String,
-    val zipCode: String,
-    val latitude: Float,
-    val longitude: Float
 )
 
 data class SiteAddressRequest(
@@ -107,10 +89,13 @@ data class SiteAddressRequest(
     val longitude: Float
 )
 
+// interface defining all the rest api calls for sites
 interface SitesAPIService {
+    // gets paginated list of sites
     @GET("sites")
     suspend fun getSites(@Query("page") page: Int, @Query("limit") limit: Int): SitesResponse
 
+    // gets details for one site
     @GET("sites/{siteId}")
     suspend fun getSiteDetails(@Path("siteId") siteId: String): SiteDetailResponse
 
