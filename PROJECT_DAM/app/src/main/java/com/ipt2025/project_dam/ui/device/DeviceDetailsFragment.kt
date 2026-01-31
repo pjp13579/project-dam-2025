@@ -37,6 +37,13 @@ class DeviceDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Check permission and navigate back if unauthorized
+        if (!RetrofitProvider.canCreateDevices()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
+        }
+        
         // Get deviceId from arguments
         deviceId = arguments?.getString("_id")
 

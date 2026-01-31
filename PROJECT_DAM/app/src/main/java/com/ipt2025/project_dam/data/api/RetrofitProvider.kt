@@ -16,6 +16,7 @@ object RetrofitProvider {
     private var authToken: String? = null
     private var user : UserData? = null
 
+
     // stores the token in memory
     fun updateToken(token: String) {
         authToken = token
@@ -29,6 +30,28 @@ object RetrofitProvider {
     // wipe token
     fun clearToken() {
         authToken = null
+    }
+
+    // get the current user's role (specified in the JWT token)
+    fun getUserRole(): String? {
+        return user?.role
+    }
+
+    // role checking
+    fun isAdmin(): Boolean {
+        return user?.role?.equals("admin", ignoreCase = true) ?: false
+    }
+
+    fun isTech(): Boolean {
+        return user?.role?.equals("technician", ignoreCase = true) ?: false
+    }
+
+    fun isGuest(): Boolean {
+        return user?.role?.equals("guest", ignoreCase = true) ?: false
+    }
+
+    fun canCreateDevices(): Boolean {
+        return isAdmin() || isTech()
     }
 
     // after successful login, store the provided login/access token

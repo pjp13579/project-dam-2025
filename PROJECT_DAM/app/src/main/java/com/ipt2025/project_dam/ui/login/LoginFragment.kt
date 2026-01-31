@@ -35,8 +35,6 @@ class LoginFragment : Fragment() {
     private lateinit var tokenManager: TokenManager
     private var _binding: FragmentLoginBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -54,22 +52,7 @@ class LoginFragment : Fragment() {
 
         tokenManager = TokenManager(requireContext())
 
-
-        val apiService = RetrofitProvider.create(LoginAPIService::class.java)
-
-        lifecycleScope.launch {
-            try{
-                val token = tokenManager.loadToken() ?: ""
-                RetrofitProvider.updateToken(token)
-                val response = apiService.loginToken()
-                RetrofitProvider.setLoggedInUser(UserLoginResponse(token = token, response))
-                loginViewModel.navigateToHome.value = true;
-            }catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-
+        // Initialize ViewModel FIRST
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
@@ -77,6 +60,27 @@ class LoginFragment : Fragment() {
         val passwordEditText = binding.password
         val loginButton = binding.login
         val loadingProgressBar = binding.loading
+
+        // NOW try to auto-login with saved token
+        lifecycleScope.launch {
+            try {
+                val token = tokenManager.loadToken() ?: ""
+                if (token.isNotEmpty()) {
+                    RetrofitProvider.updateToken(token)
+                    val apiService = RetrofitProvider.create(LoginAPIService::class.java)
+                    val userData = apiService.loginToken()
+                    // Save the user data with the token
+                    RetrofitProvider.setLoggedInUser(UserLoginResponse(token = token, user = userData))
+                    loginViewModel.navigateToHome.value = true
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Token is invalid, clear it
+                tokenManager.clearToken()
+                RetrofitProvider.clearToken()
+            }
+        }
+
 
         // Assume you have initialized your ViewModel, e.g., using by viewModels()
         // loginViewModel = ...

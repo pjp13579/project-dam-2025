@@ -39,8 +39,19 @@ class DeviceFragment : Fragment() {
 
         setupRecyclerView()
         setupClickListeners()
+        setupUIBasedOnPermissions()
         fetchDevices(currentPage, PAGE_LIMIT)
     }
+
+    private fun setupUIBasedOnPermissions() {
+        // Hide the add device button if user doesn't have permission
+        if (!RetrofitProvider.canCreateDevices()) {
+            binding.btnAddDevice.visibility = View.GONE
+        } else {
+            binding.btnAddDevice.visibility = View.VISIBLE
+        }
+    }
+
 
     private fun setupRecyclerView() {
         binding.list.layoutManager = LinearLayoutManager(context)
@@ -79,7 +90,12 @@ class DeviceFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnAddDevice.setOnClickListener {
-            findNavController().navigate(R.id.action_deviceFragment_to_addEditDeviceFragment)
+            // validate permission before navigating
+            if (RetrofitProvider.canCreateDevices()) {
+                findNavController().navigate(R.id.action_deviceFragment_to_addEditDeviceFragment)
+            } else {
+                Toast.makeText(context, "You don't have permission to create devices", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
