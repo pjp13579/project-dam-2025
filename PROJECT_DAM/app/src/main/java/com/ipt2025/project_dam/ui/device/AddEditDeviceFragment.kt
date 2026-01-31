@@ -19,13 +19,13 @@ import com.ipt2025.project_dam.data.api.DeviceUpdateRequest
 import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SitesAPIService
-import com.ipt2025.project_dam.databinding.FragmentAddEditDeviceBinding
-import com.ipt2025.project_dam.databinding.ItemDeviceCheckboxBinding
+import com.ipt2025.project_dam.databinding.FragmentDeviceAddEditBinding
+import com.ipt2025.project_dam.databinding.FragmentDeviceDetailsConnectedDeviceCheckboxBinding
 import kotlinx.coroutines.launch
 
 class AddEditDeviceFragment : Fragment() {
 
-    private var _binding: FragmentAddEditDeviceBinding? = null
+    private var _binding: FragmentDeviceAddEditBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -41,7 +41,7 @@ class AddEditDeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddEditDeviceBinding.inflate(inflater, container, false)
+        _binding = FragmentDeviceAddEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -347,10 +347,10 @@ class AddEditDeviceFragment : Fragment() {
         private val onCheckChanged: (String, Boolean) -> Unit
     ) : RecyclerView.Adapter<DeviceSelectionAdapter.ViewHolder>() {
 
-        inner class ViewHolder(val binding: ItemDeviceCheckboxBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: FragmentDeviceDetailsConnectedDeviceCheckboxBinding) : RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ItemDeviceCheckboxBinding.inflate(
+            val binding = FragmentDeviceDetailsConnectedDeviceCheckboxBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

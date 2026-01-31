@@ -12,12 +12,12 @@ import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SiteCreateRequest
 import com.ipt2025.project_dam.data.api.SiteUpdateRequest
 import com.ipt2025.project_dam.data.api.SitesAPIService
-import com.ipt2025.project_dam.databinding.FragmentAddEditSiteBinding
+import com.ipt2025.project_dam.databinding.FragmentSiteAddEditBinding
 import kotlinx.coroutines.launch
 
 class AddEditSiteFragment : Fragment() {
 
-    private var _binding: FragmentAddEditSiteBinding? = null
+    private var _binding: FragmentSiteAddEditBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -28,7 +28,7 @@ class AddEditSiteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddEditSiteBinding.inflate(inflater, container, false)
+        _binding = FragmentSiteAddEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 

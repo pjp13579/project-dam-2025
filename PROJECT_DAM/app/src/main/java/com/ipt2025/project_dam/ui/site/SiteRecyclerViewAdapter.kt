@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.ipt2025.project_dam.data.api.SiteDataResponse
-import com.ipt2025.project_dam.databinding.FragmentSiteBinding
+import com.ipt2025.project_dam.databinding.FragmentSiteListItemBinding
 
 class SiteRecyclerViewAdapter(
     private val sites: MutableList<SiteDataResponse>,
@@ -14,7 +14,7 @@ class SiteRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            FragmentSiteBinding.inflate(
+            FragmentSiteListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -38,7 +38,7 @@ class SiteRecyclerViewAdapter(
     }
 
     inner class ViewHolder(
-        private val binding: FragmentSiteBinding
+        private val binding: FragmentSiteListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         val idView: TextView = binding.itemNumber

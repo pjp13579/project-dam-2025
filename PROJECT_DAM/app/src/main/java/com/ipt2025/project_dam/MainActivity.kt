@@ -16,7 +16,7 @@ import androidx.navigation.ui.navigateUp
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ipt2025.project_dam.data.TokenManager
 import com.ipt2025.project_dam.data.api.RetrofitProvider
-import com.ipt2025.project_dam.databinding.ActivityMainBinding
+import com.ipt2025.project_dam.databinding.FragmentActivityMainHolderBinding
 
 /**
  * main entry point. handles the bottom nav and the top toolbar
@@ -24,12 +24,12 @@ import com.ipt2025.project_dam.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: FragmentActivityMainHolderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // boilerplate app configurations
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = FragmentActivityMainHolderBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         val navHostFragment = supportFragmentManager

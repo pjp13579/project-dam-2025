@@ -30,7 +30,6 @@ class LoginRepository(val dataSource: LoginDataSource) {
 
     fun logout() {
         user = null
-        dataSource.logout()
     }
 
     // tries to login via the datasource

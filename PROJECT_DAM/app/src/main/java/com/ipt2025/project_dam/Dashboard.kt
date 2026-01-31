@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 
 /**
- *  simple hub screen with big buttons to go to sites or devices
+ *  simple hub screen with buttons to go to sites or devices paginated list
  */
 
 class Dashboard : Fragment() {
