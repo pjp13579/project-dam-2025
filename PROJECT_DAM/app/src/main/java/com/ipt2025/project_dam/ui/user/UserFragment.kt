@@ -35,7 +35,7 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Check permission and navigate back if unauthorized (ADMIN ONLY)
+        // Check permission and navigate back if unauthorized
         if (!RetrofitProvider.canViewUsers()) {
             Toast.makeText(context, "Access denied - Admin only", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
@@ -45,6 +45,19 @@ class UserFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         setupUIBasedOnPermissions()
+        // DON'T fetch here - move to onResume()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh data every time we come back to this fragment
+        refreshUserList()
+    }
+
+    private fun refreshUserList() {
+        // Clear existing data and reset to page 1
+        adapter.clearUsers()
+        currentPage = 1
         fetchUsers(currentPage, PAGE_LIMIT)
     }
 
@@ -58,25 +71,12 @@ class UserFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        // Initialize adapter with click handler
         adapter = UserRecyclerViewAdapter(mutableListOf()) { user ->
-            android.util.Log.d("UserFragment", "User clicked: ${user.name}, ID: ${user._id}")
-
-            user._id?.let { userId ->
-                android.util.Log.d("UserFragment", "Navigating with ID: $userId")
-                val bundle = Bundle().apply {
-                    putString("_id", userId)
-                }
-                try {
-                    findNavController().navigate(R.id.action_userFragment_to_userDetailsFragment, bundle)
-                    android.util.Log.d("UserFragment", "Navigation successful")
-                } catch (e: Exception) {
-                    android.util.Log.e("UserFragment", "Navigation failed", e)
-                    Toast.makeText(context, "Navigation error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            } ?: run {
-                android.util.Log.e("UserFragment", "User ID is null!")
-                Toast.makeText(context, "User ID not available", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putString("_id", user.id)
             }
+            findNavController().navigate(R.id.action_userFragment_to_userDetailsFragment, bundle)
         }
 
         binding.list.layoutManager = LinearLayoutManager(context)
@@ -95,17 +95,9 @@ class UserFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = apiService.getUsers(page = page, limit = limit)
-
-                // DEBUG: Log to see what we're getting
-                android.util.Log.d("UserFragment", "Fetched ${response.users.size} users")
-                response.users.forEachIndexed { index, user ->
-                    android.util.Log.d("UserFragment", "User $index: name=${user.name}, id=${user._id}, email=${user.email}")
-                }
-
                 adapter.addUsers(response.users)
             } catch (e: Exception) {
                 e.printStackTrace()
-                android.util.Log.e("UserFragment", "Error fetching users", e)
                 Toast.makeText(
                     context,
                     "Error fetching users: ${e.message}",

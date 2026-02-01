@@ -33,6 +33,13 @@ class UserRecyclerViewAdapter(
         notifyItemRangeInserted(startPosition, newUsers.size)
     }
 
+    // ADD THIS METHOD
+    fun clearUsers() {
+        val size = users.size
+        users.clear()
+        notifyItemRangeRemoved(0, size)
+    }
+
     class UserViewHolder(private val binding: FragmentUserListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -49,10 +56,7 @@ class UserRecyclerViewAdapter(
             }
 
             binding.root.setOnClickListener {
-                // FIXED: Only call onUserClick if _id is not null
-                user._id?.let {
-                    onUserClick(user)
-                }
+                onUserClick(user)
             }
         }
     }

@@ -21,7 +21,7 @@ data class UserData(
     val role: String,
     val name: String,
     val email: String? = null,
-    val _id: String
+    val id: String
 )
 
 data class UserDetailsData(
