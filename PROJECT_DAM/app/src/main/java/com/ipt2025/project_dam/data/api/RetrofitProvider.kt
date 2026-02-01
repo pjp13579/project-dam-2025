@@ -50,8 +50,52 @@ object RetrofitProvider {
         return user?.role?.equals("guest", ignoreCase = true) ?: false
     }
 
+    fun canViewDevices(): Boolean {
+        return isAdmin() || isTech() || isGuest()
+    }
+
+    fun canViewSites(): Boolean {
+        return isAdmin() || isTech() || isGuest()
+    }
+
+    fun canViewUsers(): Boolean {
+        return isAdmin()
+    }
+
     fun canCreateDevices(): Boolean {
         return isAdmin() || isTech()
+    }
+
+    fun canCreateSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canCreateUser(): Boolean {
+        return isAdmin()
+    }
+
+    fun canEditDevice(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canEditSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canEditUser(): Boolean {
+        return isAdmin()
+    }
+
+    fun canDeleteDevice(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canDeleteSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canDeleteUser(): Boolean {
+        return isAdmin()
     }
 
     // after successful login, store the provided login/access token

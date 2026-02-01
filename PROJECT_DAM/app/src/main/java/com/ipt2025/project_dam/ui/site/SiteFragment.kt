@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,7 +20,6 @@ class SiteFragment : Fragment() {
 
     private var _binding: FragmentSiteListBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var adapter: SiteRecyclerViewAdapter
     private var currentPage = 1
     private val PAGE_LIMIT = 20
@@ -35,9 +35,26 @@ class SiteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // check permission and navigate back if unauthorized
+        if (!RetrofitProvider.canViewSites()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
+        }
+
         setupRecyclerView()
-        fetchSites(currentPage, PAGE_LIMIT)
         setupClickListeners()
+        setupUIBasedOnPermissions()
+        fetchSites(currentPage, PAGE_LIMIT)
+    }
+
+    private fun setupUIBasedOnPermissions() {
+        // hide the add site button if user doesn't have permission
+        if (!RetrofitProvider.canCreateSite()) {
+            binding.btnAddSite.visibility = View.GONE
+        } else {
+            binding.btnAddSite.visibility = View.VISIBLE
+        }
     }
 
     private fun setupRecyclerView() {
@@ -59,14 +76,14 @@ class SiteFragment : Fragment() {
         binding.list.adapter = adapter
     }
 
-    private fun fetchSites(page : Int, limit : Int){
+    private fun fetchSites(page: Int, limit: Int) {
         val apiService = RetrofitProvider.create(SitesAPIService::class.java)
 
         lifecycleScope.launch {
-            try{
+            try {
                 val response = apiService.getSites(page = page, limit = limit)
                 adapter.addSites(response.sites)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -74,7 +91,16 @@ class SiteFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnAddSite.setOnClickListener {
-            findNavController().navigate(R.id.action_siteFragment_to_addEditSiteFragment)
+            // validate permission before navigating
+            if (RetrofitProvider.canCreateSite()) {
+                findNavController().navigate(R.id.action_siteFragment_to_addEditSiteFragment)
+            } else {
+                Toast.makeText(
+                    context,
+                    "You don't have permission to create sites",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

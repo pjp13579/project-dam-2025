@@ -54,6 +54,13 @@ class AddEditDeviceFragment : Fragment() {
             deviceId = it.getString("_id")
         }
 
+        // check permission and navigate back if unauthorized
+        if (isEditMode && !RetrofitProvider.canEditDevice() || !isEditMode && !RetrofitProvider.canCreateDevices()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
+        }
+
         setupButton()
         loadSites()
         setupRecyclerView()

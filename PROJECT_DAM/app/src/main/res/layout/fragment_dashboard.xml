@@ -24,6 +24,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_devices" />
+
+        <Button
+            android:id="@+id/users_list_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_users" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

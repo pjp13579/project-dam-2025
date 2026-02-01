@@ -37,6 +37,14 @@ class DeviceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // check permission and navigate back if unauthorized
+        if (!RetrofitProvider.canViewDevices()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
+        }
+
+
         setupRecyclerView()
         setupClickListeners()
         setupUIBasedOnPermissions()
@@ -44,7 +52,7 @@ class DeviceFragment : Fragment() {
     }
 
     private fun setupUIBasedOnPermissions() {
-        // Hide the add device button if user doesn't have permission
+        // hide the add device button if user doesn't have permission
         if (!RetrofitProvider.canCreateDevices()) {
             binding.btnAddDevice.visibility = View.GONE
         } else {

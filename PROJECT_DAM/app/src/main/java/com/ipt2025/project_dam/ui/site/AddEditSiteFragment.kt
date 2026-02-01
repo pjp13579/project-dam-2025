@@ -35,10 +35,18 @@ class AddEditSiteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // Get mode from arguments
         arguments?.let {
             isEditMode = it.getBoolean("isEditMode", false)
             siteId = it.getString("_id")
+        }
+
+        // check permission and navigate back if unauthorized
+        if (isEditMode && !RetrofitProvider.canEditSite() || !isEditMode && !RetrofitProvider.canCreateSite()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
         }
 
         setupButton()
