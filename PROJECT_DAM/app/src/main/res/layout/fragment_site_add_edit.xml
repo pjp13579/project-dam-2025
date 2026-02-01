@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_edit">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_local_name"
@@ -38,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_info_details">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_type"
@@ -53,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_dialog_map">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_country"
@@ -76,7 +79,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_street"
@@ -89,7 +93,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_city"
@@ -103,7 +108,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_state"
@@ -116,7 +122,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_send">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_zipcode"
@@ -137,7 +144,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                app:startIconDrawable="@android:drawable/ic_menu_mylocation">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_latitude"
@@ -152,7 +160,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp">
+                android:layout_marginStart="8dp"
+                app:startIconDrawable="@android:drawable/ic_menu_mylocation">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_longitude"
                     android:layout_width="match_parent"

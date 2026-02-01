@@ -5,7 +5,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="error_device_id">No device ID provided</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -80,7 +80,7 @@
     <string name="title_add_user">Add User</string>
     <string name="title_edit_user">Edit User</string>
     <string name="hint_name">Name</string>
-    <string name="hint_email">Email</string>
+    <string name="hint_email">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_role">Role</string>
     <string name="helper_password_optional">Leave blank to keep current password</string>

@@ -5,7 +5,7 @@
     <string name="next">Próximo</string>
     <string name="previous">Anterior</string>
     <string name="error_device_id">Nenhum ID de dispositivo fornecido</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Utilizador</string>
     <string name="prompt_password">Senha</string>
     <string name="action_sign_in">Faça login</string>
     <string name="action_sign_in_short">Entrar</string>
@@ -80,7 +80,7 @@
     <string name="title_add_user">Adicionar Utilizador</string>
     <string name="title_edit_user">Editar Utilizador</string>
     <string name="hint_name">Nome</string>
-    <string name="hint_email">Email</string>
+    <string name="hint_email">Nome do utilizador</string>
     <string name="hint_password">Palavra-passe</string>
     <string name="hint_role">Função</string>
     <string name="helper_password_optional">Deixar em branco para manter a palavra-passe atual</string>

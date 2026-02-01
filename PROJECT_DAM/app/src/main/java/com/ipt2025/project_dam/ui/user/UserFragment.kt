@@ -15,6 +15,7 @@ import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.UsersAPIService
 import com.ipt2025.project_dam.databinding.FragmentUserListBinding
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class UserFragment : Fragment() {
 
@@ -45,12 +46,11 @@ class UserFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         setupUIBasedOnPermissions()
-        // DON'T fetch here - move to onResume()
     }
 
     override fun onResume() {
         super.onResume()
-        // Refresh data every time we come back to this fragment
+        // repopulate recycler view list when user returns back to the user list fragment
         refreshUserList()
     }
 
@@ -96,7 +96,7 @@ class UserFragment : Fragment() {
             try {
                 val response = apiService.getUsers(page = page, limit = limit)
                 adapter.addUsers(response.users)
-            } catch (e: Exception) {
+            } catch (e: CancellationException) { } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(
                     context,

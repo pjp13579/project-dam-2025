@@ -22,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_vendor"
@@ -37,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_info_details">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_device_type"
@@ -53,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_sort_by_size">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_category"
@@ -68,7 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_agenda">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_serial_number"
@@ -83,7 +87,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_share">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_device_mac_address"
@@ -98,7 +103,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_menu_view">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_state"
@@ -109,12 +115,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:startIconDrawable="@android:drawable/ic_dialog_map">
 
             <AutoCompleteTextView
                 android:id="@+id/actv_site"
@@ -147,12 +153,12 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="clear_text"
+                    app:startIconDrawable="@android:drawable/ic_menu_search">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_search_connected"
@@ -175,7 +181,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/label_selected_devices"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    app:startIconDrawable="@android:drawable/ic_menu_info_details" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
