@@ -15,6 +15,7 @@ import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SitesAPIService
 import com.ipt2025.project_dam.databinding.FragmentSiteListBinding
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class SiteFragment : Fragment() {
 
@@ -83,7 +84,7 @@ class SiteFragment : Fragment() {
             try {
                 val response = apiService.getSites(page = page, limit = limit)
                 adapter.addSites(response.sites)
-            } catch (e: Exception) {
+            } catch (e: CancellationException) { } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

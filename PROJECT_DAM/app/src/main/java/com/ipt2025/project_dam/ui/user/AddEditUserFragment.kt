@@ -186,7 +186,7 @@ class AddEditUserFragment : Fragment() {
 
         val apiService = RetrofitProvider.create(UsersAPIService::class.java)
 
-        viewLifecycleOwner.lifecycleScope.launch {  // CHANGED
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.btnSave.isEnabled = false
@@ -232,7 +232,7 @@ class AddEditUserFragment : Fragment() {
 
             val apiService = RetrofitProvider.create(UsersAPIService::class.java)
 
-            viewLifecycleOwner.lifecycleScope.launch {  // CHANGED
+            viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.btnSave.isEnabled = false

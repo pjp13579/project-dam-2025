@@ -16,6 +16,7 @@ import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.databinding.FragmentDeviceListBinding
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class DeviceFragment : Fragment() {
 
@@ -89,7 +90,7 @@ class DeviceFragment : Fragment() {
                 // If you are re-assigning adapter (usually not recommended, but keeping your logic):
                 binding.list.adapter = adapter
 
-            } catch (e: Exception) {
+            } catch (e: CancellationException) { } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(context, "Error fetching devices: ${e.message}", Toast.LENGTH_SHORT).show()
             }
