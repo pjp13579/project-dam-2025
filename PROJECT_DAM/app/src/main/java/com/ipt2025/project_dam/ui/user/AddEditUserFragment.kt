@@ -24,7 +24,7 @@ class AddEditUserFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var userId: String? = null
-    private var isEditMode: Boolean = false
+    private var isEditMode: Boolean = false // same fragment does creation and editing (post & put)
 
     // Available roles
     private val roles = listOf("guest", "technician", "admin")
@@ -54,6 +54,7 @@ class AddEditUserFragment : Fragment() {
         setupRoleDropdown()
         setupUI()
 
+        // If edit mode, load existing data
         if (isEditMode && userId != null) {
             loadUserData()
         }
@@ -61,8 +62,11 @@ class AddEditUserFragment : Fragment() {
         setupClickListeners()
     }
 
+    /**
+     * Update title based on mode (add or edit)
+     */
     private fun setupUI() {
-        // Update title based on mode
+
         binding.topAppBar.title = if (isEditMode) {
             getString(R.string.title_edit_user)
         } else {
@@ -75,6 +79,10 @@ class AddEditUserFragment : Fragment() {
         }
     }
 
+    /**
+     * populate dropdown with possible roles
+     * set default role -» guest
+     */
     private fun setupRoleDropdown() {
         val adapter = ArrayAdapter(
             requireContext(),
@@ -89,6 +97,9 @@ class AddEditUserFragment : Fragment() {
         }
     }
 
+    /**
+     * (edit mode) populate fields with user information
+     */
     private fun loadUserData() {
         userId?.let { id ->
             val apiService = RetrofitProvider.create(UsersAPIService::class.java)
@@ -116,7 +127,9 @@ class AddEditUserFragment : Fragment() {
         }
     }
 
-
+    /**
+     * setup fragment action according if its to add user or edit user
+     */
     private fun setupClickListeners() {
         binding.btnSave.setOnClickListener {
             if (validateInputs()) {
@@ -129,20 +142,23 @@ class AddEditUserFragment : Fragment() {
         }
     }
 
+    /**
+     * validate data in the input fields
+     */
     private fun validateInputs(): Boolean {
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString()
         val role = binding.roleDropdown.text.toString().trim()
 
-        // Name validation
+        // Name validation, must not be null
         if (name.isEmpty()) {
             binding.etName.error = getString(R.string.error_name_required)
             binding.etName.requestFocus()
             return false
         }
 
-        // Email validation
+        // Email validation, must not be null
         if (email.isEmpty()) {
             binding.etEmail.error = getString(R.string.error_email_required)
             binding.etEmail.requestFocus()
@@ -156,13 +172,14 @@ class AddEditUserFragment : Fragment() {
             return false
         }
 
+        // Password validation, minimum size
         if (password.isNotEmpty() && password.length < 6) {
             binding.etPassword.error = getString(R.string.error_password_length)
             binding.etPassword.requestFocus()
             return false
         }
 
-        // Role validation
+        // Role validation, allowed role
         if (role.isEmpty() || !roles.contains(role)) {
             Toast.makeText(context, getString(R.string.error_role_required), Toast.LENGTH_SHORT).show()
             return false
@@ -171,6 +188,9 @@ class AddEditUserFragment : Fragment() {
         return true
     }
 
+    /**
+     * create user
+     */
     private fun createUser() {
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()
@@ -216,6 +236,9 @@ class AddEditUserFragment : Fragment() {
         }
     }
 
+    /**
+     * update user
+     */
     private fun updateUser() {
         userId?.let { id ->
             val name = binding.etName.text.toString().trim()

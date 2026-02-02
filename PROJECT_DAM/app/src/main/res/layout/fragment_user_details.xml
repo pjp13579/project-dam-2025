@@ -50,6 +50,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
+                    <!-- username-->
                     <TextView
                         android:id="@+id/userName"
                         android:layout_width="match_parent"
@@ -58,6 +59,7 @@
                         android:textSize="16sp"
                         tools:text="Name: John Doe" />
 
+                    <!-- username -->
                     <TextView
                         android:id="@+id/userEmail"
                         android:layout_width="match_parent"
@@ -66,6 +68,7 @@
                         android:textSize="16sp"
                         tools:text="Email: john.doe@example.com" />
 
+                    <!-- username -->
                     <TextView
                         android:id="@+id/userRole"
                         android:layout_width="match_parent"
@@ -79,7 +82,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Action Buttons -->
+    <!-- Action Buttons to edit user or delete user -->
     <LinearLayout
         android:id="@+id/userDetailsLinearLayoutHolder"
         android:layout_width="match_parent"

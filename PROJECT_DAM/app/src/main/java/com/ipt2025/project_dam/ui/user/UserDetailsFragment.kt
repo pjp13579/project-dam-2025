@@ -15,6 +15,9 @@ import com.ipt2025.project_dam.data.api.UsersAPIService
 import com.ipt2025.project_dam.databinding.FragmentUserDetailsBinding
 import kotlinx.coroutines.launch
 
+/**
+ * view that displays every information about a user
+ */
 class UserDetailsFragment : Fragment() {
 
     private var _binding: FragmentUserDetailsBinding? = null
@@ -46,6 +49,9 @@ class UserDetailsFragment : Fragment() {
         setupClickListeners()
     }
 
+    /**
+     * hide create user button navigation if user doesn't have permission
+     */
     private fun setupUIBasedOnPermissions() {
         if (!RetrofitProvider.canEditUser()) {
             binding.btnEditUser.visibility = View.GONE
@@ -60,11 +66,13 @@ class UserDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * display user details
+     */
     private fun loadUserDetails() {
         userId?.let { id ->
             val apiService = RetrofitProvider.create(UsersAPIService::class.java)
 
-            // FIXED: Use viewLifecycleOwner.lifecycleScope instead of lifecycleScope
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     binding.progressBar.visibility = View.VISIBLE
@@ -88,6 +96,9 @@ class UserDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * permission control for edit and delete site
+     */
     private fun setupClickListeners() {
         binding.btnEditUser.setOnClickListener {
             if (RetrofitProvider.canEditUser()) {
@@ -109,6 +120,9 @@ class UserDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * delete confirmation pop-up
+     */
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete User")
@@ -120,6 +134,9 @@ class UserDetailsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * site soft delete, when button is clicked
+     */
     private fun deleteUser() {
         // FIXED: Use viewLifecycleOwner.lifecycleScope instead of lifecycleScope
         viewLifecycleOwner.lifecycleScope.launch {

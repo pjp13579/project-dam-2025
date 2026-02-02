@@ -20,6 +20,9 @@ import com.ipt2025.project_dam.databinding.FragmentDeviceListItemBinding
 import com.ipt2025.project_dam.databinding.FragmentSiteDetailsBinding
 import kotlinx.coroutines.launch
 
+/**
+ * view that displays every information about a site
+ */
 class SiteDetailsFragment : Fragment() {
     private var _binding: FragmentSiteDetailsBinding? = null
     private val binding get() = _binding!!
@@ -55,6 +58,9 @@ class SiteDetailsFragment : Fragment() {
         setupUIBasedOnPermissions()
     }
 
+    /**
+     * hide create site button navigation if user doesn't have permission
+     */
     private fun setupUIBasedOnPermissions() {
         // hide the edit site button if user doesn't have permission
         if (!RetrofitProvider.canEditSite()) {
@@ -74,8 +80,11 @@ class SiteDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * configures navigation to a device details when the respective is clicked on the device at site
+     */
     private fun setupDeviceList() {
-        // INLINE ADAPTER: Defined right here in the fragment
+
         val deviceAdapter = object : RecyclerView.Adapter<DeviceViewHolder>() {
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
@@ -114,10 +123,12 @@ class SiteDetailsFragment : Fragment() {
         binding.rvDevices.adapter = deviceAdapter
     }
 
-    // ViewHolder now accepts the Binding object
     private class DeviceViewHolder(val binding: FragmentDeviceListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
+    /**
+     * given a site id, request detailed site information
+     */
     private fun loadSiteDetails() {
         val apiService = RetrofitProvider.create(SitesAPIService::class.java)
         siteId?.let { id ->
@@ -163,6 +174,9 @@ class SiteDetailsFragment : Fragment() {
         println("No devices at this site")
     }
 
+    /**
+     * permission control for edit and delete site
+     */
     private fun setupClickListeners() {
         if (RetrofitProvider.canEditSite()) {
             binding.btnEditSite.setOnClickListener {
@@ -186,6 +200,9 @@ class SiteDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * delete confirmation pop-up
+     */
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(requireContext().getString(R.string.delete_site))
@@ -197,6 +214,9 @@ class SiteDetailsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * site soft delete, when button is clicked
+     */
     private fun deleteSite() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {

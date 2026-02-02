@@ -31,6 +31,7 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
 
+                <!-- site type -->
                 <TextView
                     android:id="@+id/site_detail_type"
                     android:layout_width="match_parent"
@@ -39,6 +40,7 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
+                <!-- site country -->
                 <TextView
                     android:id="@+id/site_detail_country"
                     android:layout_width="match_parent"
@@ -48,7 +50,7 @@
                     android:layout_marginBottom="8dp" />
 
 
-                <!-- Devices Section -->
+                <!-- Devices ay Site  -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -72,7 +74,7 @@
 
         </ScrollView>
 
-
+        <!-- site edit and delete action button-->
         <LinearLayout
             android:id="@+id/siteDetailsLinearLayoutHolder"
             android:layout_width="match_parent"
@@ -81,6 +83,7 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
+            <!-- edit site button-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_edit_site"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -90,6 +93,7 @@
                 android:layout_weight="1"
                 android:text="@string/edit" />
 
+            <!-- soft delete button-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_site"
                 android:layout_width="0dp"

@@ -33,7 +33,6 @@ class UserRecyclerViewAdapter(
         notifyItemRangeInserted(startPosition, newUsers.size)
     }
 
-    // ADD THIS METHOD
     fun clearUsers() {
         val size = users.size
         users.clear()

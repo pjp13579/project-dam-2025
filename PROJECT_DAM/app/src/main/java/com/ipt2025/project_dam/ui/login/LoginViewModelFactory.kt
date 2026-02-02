@@ -7,7 +7,7 @@ import com.ipt2025.project_dam.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
- * Required given LoginViewModel has a non-empty constructor
+ * required given LoginViewModel has a non-empty constructor
  */
 class LoginViewModelFactory : ViewModelProvider.Factory {
 

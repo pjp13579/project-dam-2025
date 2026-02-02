@@ -55,7 +55,7 @@ data class RegisterUserResponse(
 data class EditUserRequest(
     val name: String,
     val email: String,
-    val password: String? = null,  // only if changing password
+    val password: String? = null,  // (optional) only if changing password
     val role: String
 )
 

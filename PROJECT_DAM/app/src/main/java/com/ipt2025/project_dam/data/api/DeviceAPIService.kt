@@ -76,7 +76,7 @@ data class DeviceDetailsConnectedDeviceResponse(
     val updatedAt: Date
 )
 
-// For CREATE request - site should be a String (ID)
+// for CREATE request - site should be a String (ID)
 data class DeviceCreateRequest(
     val vendor: String,
     val category: String,
@@ -84,12 +84,12 @@ data class DeviceCreateRequest(
     val serialNumber: String,
     val macAddress: String,
     val state: String,
-    val site: String,  // Site ID as string
+    val site: String,  // site ID as string
     val connectedDevices: List<String>? = emptyList(),
-    val isActive: Boolean = true  // Default to active
+    val isActive: Boolean = true  // default -» active
 )
 
-// For UPDATE request - all fields optional except isActive
+// for UPDATE request - all fields optional except isActive
 data class DeviceUpdateRequest(
     val vendor: String? = null,
     val category: String? = null,
@@ -97,7 +97,7 @@ data class DeviceUpdateRequest(
     val serialNumber: String? = null,
     val macAddress: String? = null,
     val state: String? = null,
-    val site: String? = null,  // Site ID as string
+    val site: String? = null,  // site ID as string
     val connectedDevices: List<String>? = null,
     val isActive: Boolean? = null
 )
@@ -137,14 +137,14 @@ interface DevicesAPIService {
     @POST("devices")
     suspend fun createDevice(@Body device: DeviceCreateRequest): Response<DeviceCreateUpdateResponse>
 
-    // Update device - expects site as String ID
+    // update device - expects site as String ID
     @PUT("devices/{deviceId}")
     suspend fun updateDevice(
         @Path("deviceId") deviceId: String,
         @Body device: DeviceUpdateRequest
     ): Response<DeviceCreateUpdateResponse>
 
-    // Delete device
+    // soft delete device
     @DELETE("devices/{deviceId}")
     suspend fun deleteDevice(@Path("deviceId") deviceId: String): Response<Unit>
 }

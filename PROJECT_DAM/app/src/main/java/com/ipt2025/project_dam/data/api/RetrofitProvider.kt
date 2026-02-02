@@ -98,13 +98,17 @@ object RetrofitProvider {
         return isAdmin()
     }
 
-    // after successful login, store the provided login/access token
+    /**
+     *  after successful login, store the provided login/access token
+     */
     fun setLoggedInUser(loggedInUser: UserLoginResponse){
         authToken = loggedInUser.token
         user = loggedInUser.user
     }
 
-    // sets up retrofit with a custom interceptor (automatically inject JWT auth token into request header)
+    /**
+     * sets up retrofit with a custom interceptor (automatically inject JWT auth token into request header)
+     */
     fun <T> create(service: Class<T>): T {
         val client = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->

@@ -18,6 +18,9 @@ import com.ipt2025.project_dam.databinding.FragmentDeviceListBinding
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * list of existing devices
+ */
 class DeviceFragment : Fragment() {
 
     private var _binding: FragmentDeviceListBinding? = null
@@ -38,7 +41,7 @@ class DeviceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // check permission and navigate back if unauthorized
+        // check permission to view existing devices and navigate back if unauthorized
         if (!RetrofitProvider.canViewDevices()) {
             Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
@@ -52,6 +55,9 @@ class DeviceFragment : Fragment() {
         fetchDevices(currentPage, PAGE_LIMIT)
     }
 
+    /**
+     * check permission to add devices and hide navigation button if unauthorized
+     */
     private fun setupUIBasedOnPermissions() {
         // hide the add device button if user doesn't have permission
         if (!RetrofitProvider.canCreateDevices()) {
@@ -61,14 +67,19 @@ class DeviceFragment : Fragment() {
         }
     }
 
-
+    /**
+     * setup recycler view data and item navigation
+     */
     private fun setupRecyclerView() {
         binding.list.layoutManager = LinearLayoutManager(context)
+
+        // set bundle. persist clicked item id to then perform getBtId/ getDetails API request
         adapter = DeviceRecyclerViewAdapter(mutableListOf()) { device ->
             val bundle = bundleOf("_id" to device._id)
             findNavController().navigate(R.id.action_deviceFragment_to_deviceDetailsFragment, bundle)
         }
 
+        // setup scroll listener to request next page when reaching end of records
         binding.list.addOnScrollListener(object : EndlessScrollListener() {
             override fun onLoadMore(page: Int) {
                 currentPage++
@@ -79,6 +90,9 @@ class DeviceFragment : Fragment() {
         binding.list.adapter = adapter
     }
 
+    /**
+     * get page of existing devices
+     */
     private fun fetchDevices(page: Int, limit: Int) {
         val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
 
@@ -97,6 +111,9 @@ class DeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * set navigation listener to add a device
+     */
     private fun setupClickListeners() {
         binding.btnAddDevice.setOnClickListener {
             // validate permission before navigating

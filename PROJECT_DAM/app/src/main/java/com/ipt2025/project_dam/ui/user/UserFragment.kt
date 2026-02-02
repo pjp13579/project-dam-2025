@@ -17,6 +17,9 @@ import com.ipt2025.project_dam.databinding.FragmentUserListBinding
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * list of existing users
+ */
 class UserFragment : Fragment() {
 
     private var _binding: FragmentUserListBinding? = null
@@ -48,21 +51,31 @@ class UserFragment : Fragment() {
         setupUIBasedOnPermissions()
     }
 
+    /**
+     * repopulate user list when we return to the user list
+     */
     override fun onResume() {
         super.onResume()
         // repopulate recycler view list when user returns back to the user list fragment
         refreshUserList()
     }
 
+    /**
+     * reset user list to page 1
+     * remove existing user and request first page to API
+     */
     private fun refreshUserList() {
-        // Clear existing data and reset to page 1
+        // clear existing data and reset to page 1
         adapter.clearUsers()
         currentPage = 1
         fetchUsers(currentPage, PAGE_LIMIT)
     }
 
+    /**
+     * check permission to add users and hide navigation button if unauthorized
+     */
     private fun setupUIBasedOnPermissions() {
-        // Hide the add user button if user doesn't have permission
+        // hide the add user button if user doesn't have permission
         if (!RetrofitProvider.canCreateUser()) {
             binding.btnAddUser.visibility = View.GONE
         } else {
@@ -70,8 +83,11 @@ class UserFragment : Fragment() {
         }
     }
 
+    /**
+     * setup recycler view data and item navigation
+     */
     private fun setupRecyclerView() {
-        // Initialize adapter with click handler
+        // set bundle. persist clicked item id to then perform getBtId/ getDetails API request
         adapter = UserRecyclerViewAdapter(mutableListOf()) { user ->
             val bundle = Bundle().apply {
                 putString("_id", user.id)
@@ -80,6 +96,8 @@ class UserFragment : Fragment() {
         }
 
         binding.list.layoutManager = LinearLayoutManager(context)
+
+        // setup scroll listener to request next page when reaching end of records
         binding.list.addOnScrollListener(object : EndlessScrollListener() {
             override fun onLoadMore(page: Int) {
                 currentPage++
@@ -89,6 +107,9 @@ class UserFragment : Fragment() {
         binding.list.adapter = adapter
     }
 
+    /**
+     * get page of existing users
+     */
     private fun fetchUsers(page: Int, limit: Int) {
         val apiService = RetrofitProvider.create(UsersAPIService::class.java)
 
@@ -107,6 +128,9 @@ class UserFragment : Fragment() {
         }
     }
 
+    /**
+     * set navigation listener to add a user
+     */
     private fun setupClickListeners() {
         binding.btnAddUser.setOnClickListener {
             // Validate permission before navigating

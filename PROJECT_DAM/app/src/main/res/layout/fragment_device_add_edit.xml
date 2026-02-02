@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Device Information-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +19,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- Device vendor -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,6 +36,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Device type -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +53,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Device Category-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_category_layout"
             android:layout_width="match_parent"
@@ -67,6 +71,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Device Serial Number-->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,6 +88,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Device MAC Address -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,6 +105,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Device Operational Status -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,11 +122,13 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Site at which Device is located-->
+        <!-- Values will be injected posteriorly. Data source - API -->
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             app:startIconDrawable="@android:drawable/ic_dialog_map">
 
             <AutoCompleteTextView
@@ -131,14 +140,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
+        <!-- Connected Devices-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/title_connected_devices"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textStyle="bold" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -153,6 +162,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- filter device by name-->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,7 +179,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-
+                <!-- devices to choose from-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_device_selection"
                     android:layout_width="match_parent"
@@ -180,13 +190,14 @@
                     android:id="@+id/tv_selected_device_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/label_selected_devices"
                     android:enabled="false"
+                    android:hint="@string/label_selected_devices"
                     app:startIconDrawable="@android:drawable/ic_menu_info_details" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Execute Action (create or edit) button-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
             android:layout_width="match_parent"

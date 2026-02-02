@@ -15,7 +15,9 @@ import java.io.IOException
  */
 class LoginDataSource {
 
-    // calls the api with username and password
+    /**
+     * calls the api with username and password
+     */
     suspend fun login(username: String, password: String): Result<UserLoginResponse> {
         try {
             // build a specific retrofit instance for login since we don't have a JWT auth token yet
@@ -29,7 +31,7 @@ class LoginDataSource {
             val result = apiService.loginUser(request)
             return Result.Success(result)
         } catch (e: Throwable) {
-            // wrap failures in result class
+            // wrap failure in result class
             return Result.Error(IOException("Error logging in", e))
         }
     }

@@ -7,6 +7,7 @@
     android:padding="8dp"
     android:layout_margin="4dp">
 
+    <!-- device category-->
     <TextView
         android:id="@+id/rvcategory"
         android:layout_width="match_parent"
@@ -14,35 +15,42 @@
         android:textSize="12sp"
         android:layout_marginBottom="4dp" />
 
+    <!-- device type-->
     <TextView
         android:id="@+id/rvtype"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp" />
 
+    <!-- device serial number-->
     <TextView
         android:id="@+id/rvserialNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp" />
 
+    <!-- device mac address-->
     <TextView
         android:id="@+id/rvmacAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp" />
 
+    <!-- device site-->
     <TextView
         android:id="@+id/rvsitetype"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp" />
 
+    <!-- site country-->
     <TextView
         android:id="@+id/rvcountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp" />
+
+    <!-- site street -->
     <TextView
         android:id="@+id/rvstreet"
         android:layout_width="match_parent"

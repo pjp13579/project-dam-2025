@@ -18,6 +18,9 @@ import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.databinding.FragmentDeviceDetailBinding
 import kotlinx.coroutines.launch
 
+/**
+ * view that displays every information about a device
+ */
 class DeviceDetailsFragment : Fragment() {
 
     private var _binding: FragmentDeviceDetailBinding? = null
@@ -53,6 +56,9 @@ class DeviceDetailsFragment : Fragment() {
 
     }
 
+    /**
+     * hide create device button navigation if user doesn't have permission
+     */
     private fun setupUIBasedOnPermissions() {
         // hide the edit site button if user doesn't have permission
         if (!RetrofitProvider.canEditDevice()) {
@@ -72,6 +78,10 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * setup navigation for ui components
+     * setup recycler view contents
+     */
     private fun setupUI() {
         // Setup back button in toolbar
         binding.topAppBar.setNavigationOnClickListener {
@@ -106,7 +116,11 @@ class DeviceDetailsFragment : Fragment() {
         binding.rvConnectedDevices.layoutManager = LinearLayoutManager(requireContext())
     }
 
+    /**
+     * set metadata required by add/edit device  fragment and set navigation
+     */
     private fun navigateToEditDevice() {
+        // isEditMode distinguish between add and edit. same fragment do add and edit.
         deviceId?.let { id ->
             val bundle = Bundle().apply {
                 putString("_id", id)
@@ -119,6 +133,9 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * confirmation pop-up for soft deleting device
+     */
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(requireContext().getString(R.string.alert_delete_device))
@@ -130,9 +147,17 @@ class DeviceDetailsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * soft delete device
+     */
     private fun deleteDevice() {
+        if (!RetrofitProvider.canDeleteDevice()) {
+            Toast.makeText(context, "Access denied. Can't delete device", Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             try {
+
                 deviceId?.let { id ->
                     val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
                     val response = apiService.deleteDevice(id)
@@ -159,6 +184,9 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * given a device id, request detailed information
+     */
     private fun loadDeviceDetails() {
         deviceId?.let { id ->
             // Show loading state
@@ -195,6 +223,10 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * when editing a device, data fields are populated with the existing device information
+     * this function populates the text fields with the existing device information
+     */
     private fun displayDeviceData(device: DeviceDetailDataResponse) {
         // Device information
         val ctx = requireContext()
@@ -234,6 +266,9 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * show loading spinner while device details is being received
+     */
     private fun showLoading(show: Boolean) {
         binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
         if (show) {

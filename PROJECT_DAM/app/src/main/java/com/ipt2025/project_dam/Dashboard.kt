@@ -10,52 +10,57 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.data.api.RetrofitProvider
+import com.ipt2025.project_dam.databinding.FragmentDashboardBinding
+import com.ipt2025.project_dam.databinding.FragmentDeviceListBinding
+import com.ipt2025.project_dam.databinding.FragmentUserListBinding
 
 /**
- *  simple hub screen with buttons to go to sites or devices paginated list
+ *  simple hub screen with buttons to go to sites, devices, or users paginated list
  */
-
 class Dashboard : Fragment() {
-    private lateinit var siteButton: Button
-    private lateinit var deviceButton: Button
-    private lateinit var userButton: Button
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        var view = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    /**
+     * setup button for navigation if user has permission for such
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        // sites
         if (RetrofitProvider.canViewSites()) {
-            siteButton = view.findViewById(R.id.site_list_button)
-            siteButton.setOnClickListener {
+            binding.siteListButton.setOnClickListener {
                 findNavController().navigate(R.id.action_dashboard_to_siteFragment)
             }
-
+        } else {
+            binding.siteListButton.visibility = View.GONE
         }
-        if (RetrofitProvider.canViewDevices()) {
-            deviceButton = view.findViewById(R.id.device_list_button)
 
-            deviceButton.setOnClickListener {
+        // devices
+        if (RetrofitProvider.canViewDevices()) {
+            binding.deviceListButton.setOnClickListener {
                 findNavController().navigate(R.id.action_dashboard_to_deviceFragment)
             }
+        } else {
+            binding.deviceListButton.visibility = View.GONE
         }
 
+        // users
         if (RetrofitProvider.canViewUsers()) {
-            userButton = view.findViewById(R.id.users_list_button)
-
-            userButton.setOnClickListener {
+            binding.usersListButton.setOnClickListener {
                 findNavController().navigate(R.id.action_dashboard_to_userFragment2)
             }
+        } else {
+            binding.usersListButton.visibility = View.GONE
         }
-
-
-        return view;
     }
 }
