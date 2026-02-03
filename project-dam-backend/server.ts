@@ -6,6 +6,7 @@ import { RegisterRoutes } from './dist/routes';
 import swaggerUi from 'swagger-ui-express';
 import { errorHandler } from './src/middleware/errorHandler';
 import { expressAuthentication } from './src/middleware/auth';
+import path from 'path';
 
 // load .env
 dotenv.config();
@@ -25,7 +26,7 @@ app.use('/docs', swaggerUi.serve, async (_req: express.Request, res: express.Res
 
 // apply auth middleware to all routes except auth and docs
 app.use((req, res, next) => {
-	if (req.path === '/auth/login' || req.path.startsWith('/docs')) {
+	if (req.path === '/auth/login' || req.path.startsWith('/docs') || req.path.startsWith('/privacy-policy')) {
 		return next();
 	}
 	expressAuthentication(req, 'jwt')
@@ -37,6 +38,11 @@ app.use((req, res, next) => {
 		.catch(err => {
 			res.status(401).json({ message: err.message });
 		});
+});
+
+// serve privacy policy
+app.get("/privacy-policy", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/privacy.html"));
 });
 
 // register tsoa routes
