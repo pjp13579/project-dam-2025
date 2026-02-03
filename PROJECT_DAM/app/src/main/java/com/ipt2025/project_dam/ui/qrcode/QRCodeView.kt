@@ -23,7 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 
-// fragment that handles the camera to scan device qr codes and validate them
+/**
+ *  fragment that handles the camera to scan device qr codes and process result
+ */
 class QRCodeView : Fragment() {
 
     private lateinit var messageText: TextView
@@ -57,12 +59,16 @@ class QRCodeView : Fragment() {
         }
     }
 
-    // checks permissions before actually launching the scanner
+    /**
+     * checks permissions before actually launching the scanner
+     */
     private fun startCamera() {
         checkCameraPermission()
     }
 
-    // configures the zxing scanner options
+    /**
+     * configures the zxing scanner options
+     */
     private fun startQRCodeScan() {
 
         messageText.text = "Point camera at QR code"
@@ -77,9 +83,11 @@ class QRCodeView : Fragment() {
         integrator.initiateScan()
     }
 
-    // handles what happens after the camera closes
-    // validates the read object
-    // validates if the read object is a valid mongo object id
+    /**
+     * handles what happens after the camera closes
+     * validates the read object
+     * validates if the read object is a valid mongo object id
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
@@ -115,15 +123,19 @@ class QRCodeView : Fragment() {
         }
     }
 
-    // validates if string if a valid mongo object id
+    /**
+     * validates if string if a valid mongo object id
+     */
     private fun isValidMongoObjectId(id: String): Boolean {
         // MongoDB ObjectID is 24 hex characters
         val mongoIdPattern = Pattern.compile("^[0-9a-fA-F]{24}$")
         return mongoIdPattern.matcher(id).matches()
     }
 
-    // verifies if mongo id matches a existing device
-    // if not valid, don't navigate user to device details fragment
+    /**
+     * verifies if mongo id matches a existing device
+     * if not valid, don't navigate user to device details fragment
+     */
     private fun checkDeviceExists(deviceId: String) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
@@ -181,6 +193,9 @@ class QRCodeView : Fragment() {
         }
     }
 
+    /**
+     * open camera if app has been granted camera access permission
+     */
     private fun checkCameraPermission() {
         if (isCameraPermissionGranted()) {
             startQRCodeScan()
@@ -192,42 +207,15 @@ class QRCodeView : Fragment() {
         }
     }
 
+    /**
+     * verify if app has access grant to camera
+     */
     private fun isCameraPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
-/*
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startQRCodeScan()
-            } else {
-                // Permission denied
-                messageText.text = "Camera permission required"
-
-                Toast.makeText(
-                    requireContext(),
-                    "Camera permission is required to scan QR codes. Please enable it in settings.",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                // Optionally, you could show a button to open app settings
-                // or navigate back after a delay
-                view?.postDelayed({
-                    findNavController().navigateUp()
-                }, 3000)
-            }
-        }
-    }
-
- */
 
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 1001

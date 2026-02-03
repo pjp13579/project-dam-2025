@@ -20,6 +20,9 @@ import com.ipt2025.project_dam.databinding.FragmentDeviceListItemBinding
 import com.ipt2025.project_dam.databinding.FragmentSiteDetailsBinding
 import kotlinx.coroutines.launch
 
+/**
+ * view that displays every information about a site
+ */
 class SiteDetailsFragment : Fragment() {
     private var _binding: FragmentSiteDetailsBinding? = null
     private val binding get() = _binding!!
@@ -51,10 +54,37 @@ class SiteDetailsFragment : Fragment() {
 
         // setup button listeners
         setupClickListeners()
+
+        setupUIBasedOnPermissions()
     }
 
+    /**
+     * hide create site button navigation if user doesn't have permission
+     */
+    private fun setupUIBasedOnPermissions() {
+        // hide the edit site button if user doesn't have permission
+        if (!RetrofitProvider.canEditSite()) {
+            binding.btnEditSite.visibility = View.GONE
+        } else {
+            binding.btnEditSite.visibility = View.VISIBLE
+        }
+
+        if (!RetrofitProvider.canDeleteSite()) {
+            binding.btnDeleteSite.visibility = View.GONE
+        } else {
+            binding.btnDeleteSite.visibility = View.VISIBLE
+        }
+
+        if (!RetrofitProvider.canDeleteSite() && !RetrofitProvider.canEditSite()) {
+            binding.siteDetailsLinearLayoutHolder.visibility = View.GONE
+        }
+    }
+
+    /**
+     * configures navigation to a device details when the respective is clicked on the device at site
+     */
     private fun setupDeviceList() {
-        // INLINE ADAPTER: Defined right here in the fragment
+
         val deviceAdapter = object : RecyclerView.Adapter<DeviceViewHolder>() {
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
@@ -79,7 +109,10 @@ class SiteDetailsFragment : Fragment() {
                     val bundle = Bundle().apply {
                         putString("_id", device._id)
                     }
-                    findNavController().navigate(R.id.action_siteDetailsFragment_to_deviceDetailsFragment, bundle)
+                    findNavController().navigate(
+                        R.id.action_siteDetailsFragment_to_deviceDetailsFragment,
+                        bundle
+                    )
                 }
             }
 
@@ -90,21 +123,25 @@ class SiteDetailsFragment : Fragment() {
         binding.rvDevices.adapter = deviceAdapter
     }
 
-    // ViewHolder now accepts the Binding object
-    private class DeviceViewHolder(val binding: FragmentDeviceListItemBinding) : RecyclerView.ViewHolder(binding.root)
+    private class DeviceViewHolder(val binding: FragmentDeviceListItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
+    /**
+     * given a site id, request detailed site information
+     */
     private fun loadSiteDetails() {
         val apiService = RetrofitProvider.create(SitesAPIService::class.java)
         siteId?.let { id ->
             viewModel.loadSiteDetails(apiService, id)
         }
 
-        lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 when (state) {
                     is SiteDetailUiState.Loading -> {
                         binding.siteDetailName.text = requireContext().getString(R.string.loading)
                     }
+
                     is SiteDetailUiState.Success -> {
                         val site = state.site
                         binding.siteDetailName.text = site.localName
@@ -124,6 +161,7 @@ class SiteDetailsFragment : Fragment() {
                             showEmptyDevicesState()
                         }
                     }
+
                     is SiteDetailUiState.Error -> {
                         binding.siteDetailName.text = "Error: ${state.message}"
                     }
@@ -136,22 +174,35 @@ class SiteDetailsFragment : Fragment() {
         println("No devices at this site")
     }
 
+    /**
+     * permission control for edit and delete site
+     */
     private fun setupClickListeners() {
-        binding.btnEditSite.setOnClickListener {
-            siteId?.let { id ->
-                val bundle = Bundle().apply {
-                    putString("_id", id)
-                    putBoolean("isEditMode", true)
+        if (RetrofitProvider.canEditSite()) {
+            binding.btnEditSite.setOnClickListener {
+                siteId?.let { id ->
+                    val bundle = Bundle().apply {
+                        putString("_id", id)
+                        putBoolean("isEditMode", true)
+                    }
+                    findNavController().navigate(
+                        R.id.action_siteDetailsFragment_to_addEditSiteFragment,
+                        bundle
+                    )
                 }
-                findNavController().navigate(R.id.action_siteDetailsFragment_to_addEditSiteFragment, bundle)
             }
         }
 
-        binding.btnDeleteSite.setOnClickListener {
-            showDeleteConfirmationDialog()
+        if (RetrofitProvider.canDeleteSite()) {
+            binding.btnDeleteSite.setOnClickListener {
+                showDeleteConfirmationDialog()
+            }
         }
     }
 
+    /**
+     * delete confirmation pop-up
+     */
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(requireContext().getString(R.string.delete_site))
@@ -163,8 +214,11 @@ class SiteDetailsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * site soft delete, when button is clicked
+     */
     private fun deleteSite() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(SitesAPIService::class.java)
                 siteId?.let { id ->
@@ -173,7 +227,11 @@ class SiteDetailsFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Failed to delete site: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to delete site: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

@@ -5,7 +5,7 @@
     <string name="next">Próximo</string>
     <string name="previous">Anterior</string>
     <string name="error_device_id">Nenhum ID de dispositivo fornecido</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Utilizador</string>
     <string name="prompt_password">Senha</string>
     <string name="action_sign_in">Faça login</string>
     <string name="action_sign_in_short">Entrar</string>
@@ -74,4 +74,25 @@
     <string name="site_empty">Este local não tem dispositivos</string>
     <string name="loading">Carregando…</string>
     <string name="preparing_camera">Preparando a camera…</string>
+    <string name="button_register_new_user">Adicionar utilizador</string>
+    <string name="title_user_details">Detalhes do utilizador</string>
+    <string name="title_user_information">Informação do utilizador</string>
+    <string name="title_add_user">Adicionar Utilizador</string>
+    <string name="title_edit_user">Editar Utilizador</string>
+    <string name="hint_name">Nome</string>
+    <string name="hint_email">Nome do utilizador</string>
+    <string name="hint_password">Palavra-passe</string>
+    <string name="hint_role">Função</string>
+    <string name="helper_password_optional">Deixar em branco para manter a palavra-passe atual</string>
+    <string name="error_name_required">O nome é obrigatório</string>
+    <string name="error_email_required">O email é obrigatório</string>
+    <string name="error_email_invalid">Por favor, introduza um endereço de email válido</string>
+    <string name="error_password_required">A palavra-passe é obrigatória</string>
+    <string name="error_password_length">A palavra-passe deve ter pelo menos 6 caracteres</string>
+    <string name="error_role_required">Por favor, selecione uma função válida</string>
+    <string name="success_user_created">Utilizador criado com sucesso</string>
+    <string name="success_user_updated">Utilizador atualizado com sucesso</string>
+    <string name="error_creating_user">Erro ao criar utilizador: %s</string>
+    <string name="error_updating_user">Erro ao atualizar utilizador: %s</string>
+    <string name="title_users">Utilizadores</string>
 </resources>

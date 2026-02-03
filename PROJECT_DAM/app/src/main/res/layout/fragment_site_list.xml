@@ -24,6 +24,6 @@
         android:layout_weight="1"
         android:layout_marginHorizontal="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_site" />
+        tools:listitem="@layout/fragment_site_list_item" />
 
 </LinearLayout>

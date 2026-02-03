@@ -30,6 +30,7 @@ interface UpdateUserRequest {
 }
 
 interface GetUser {
+	id: string;
 	email: string;
 	name: string;
 	role: string;
@@ -58,6 +59,7 @@ export class UserController extends Controller {
 
 		// Map IUser objects to GetUser DTO
 		const userDtos: GetUser[] = users.map(user => ({
+			id: user._id.toString(),
 			email: user.email,
 			name: user.name,
 			role: user.role
@@ -85,6 +87,7 @@ export class UserController extends Controller {
 		}
 
 		return {
+			id: user._id.toString(),
 			"email": user.email,
 			"name": user.name,
 			"role": user.role
@@ -103,6 +106,7 @@ export class UserController extends Controller {
 		}
 
 		return {
+			id: user._id.toString(),
 			"email": user.email,
 			"name": user.name,
 			"role": user.role

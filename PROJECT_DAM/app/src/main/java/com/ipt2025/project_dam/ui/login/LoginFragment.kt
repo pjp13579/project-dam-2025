@@ -29,14 +29,16 @@ import com.ipt2025.project_dam.ui.qrcode.QRCodeView
 import com.ipt2025.project_dam.ui.site.SiteRecyclerViewAdapter
 import kotlinx.coroutines.launch
 
+/**
+ * preforms login
+ * first fragment to be displayed in the activityMain fragment holder
+ */
 class LoginFragment : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var tokenManager: TokenManager
     private var _binding: FragmentLoginBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -54,22 +56,8 @@ class LoginFragment : Fragment() {
 
         tokenManager = TokenManager(requireContext())
 
-
-        val apiService = RetrofitProvider.create(LoginAPIService::class.java)
-
-        lifecycleScope.launch {
-            try{
-                val token = tokenManager.loadToken() ?: ""
-                RetrofitProvider.updateToken(token)
-                val response = apiService.loginToken()
-                RetrofitProvider.setLoggedInUser(UserLoginResponse(token = token, response))
-                loginViewModel.navigateToHome.value = true;
-            }catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-
+        // initialize ViewModel
+        // manages login UI state (loader, block/unblock login button and data value validation)
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
@@ -78,28 +66,55 @@ class LoginFragment : Fragment() {
         val loginButton = binding.login
         val loadingProgressBar = binding.loading
 
-        // Assume you have initialized your ViewModel, e.g., using by viewModels()
-        // loginViewModel = ...
+        /**
+         * AUTO-LOGIN LOGIC:
+         * 1. check if a token exists in SharedPreferences (disk).
+         * 2. if yes, try to validate it with the API.
+         * 3. if valid, skip the login screen and go to Dashboard.
+         */
+        lifecycleScope.launch {
+            try {
+                val token = tokenManager.loadToken() ?: ""
+                if (token.isNotEmpty()) {
+                    RetrofitProvider.updateToken(token)
+                    val apiService = RetrofitProvider.create(LoginAPIService::class.java)
+                    val userData = apiService.loginToken()
+                    // save the user data with the token
+                    RetrofitProvider.setLoggedInUser(UserLoginResponse(token = token, user = userData))
+                    loginViewModel.navigateToHome.value = true
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // token is invalid, clear it
+                tokenManager.clearToken()
+                RetrofitProvider.clearToken()
+            }
+        }
 
-        // Observe the navigation signal from the ViewModel
+        // OBSERVER: watch for the navigation signal
         loginViewModel.navigateToHome.observe(viewLifecycleOwner, Observer { shouldNavigate ->
             if (shouldNavigate) {
-                // Navigate to the next fragment (e.g., HomeFragment)
+                // navigate to the Dashboard fragment )
                 findNavController().navigate(R.id.action_loginFragment_to_dashboard)
 
                 usernameEditText.setText("")
                 passwordEditText.setText("")
-                // IMPORTANT: Reset the event flag in the ViewModel to prevent
-                // navigation from re-triggering (e.g., on config change/rotation)
+
+                // reset flag so rotating the screen doesn't trigger navigation again
                 loginViewModel.doneNavigating()
             }
         })
+
+        // OBSERVER: watch for form validation errors
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
             Observer { loginFormState ->
                 if (loginFormState == null) {
                     return@Observer
                 }
+                // enable/disable button based on input values
                 loginButton.isEnabled = loginFormState.isDataValid
+
+                // show errors on the text fields (if any)
                 loginFormState.usernameError?.let {
                     usernameEditText.error = getString(it)
                 }
@@ -108,12 +123,13 @@ class LoginFragment : Fragment() {
                 }
             })
 
+        // OBSERVER: watch for the final API result
         loginViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
 
                 loginResult ?: return@Observer
                 loadingProgressBar.visibility = View.GONE
-                loginResult.error?.let {
+                loginResult.error?.let { // handle error
                     showLoginFailed(it)
                 }
                 loginResult.success?.let {
@@ -124,14 +140,11 @@ class LoginFragment : Fragment() {
                 }
             })
 
+        // TEXT WATCHER: listen for typing to trigger LoginViewModel validation
         val afterTextChangedListener = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // ignore
-            }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { }
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // ignore
-            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) { }
 
             override fun afterTextChanged(s: Editable) {
                 loginViewModel.loginDataChanged(
@@ -142,6 +155,8 @@ class LoginFragment : Fragment() {
         }
         usernameEditText.addTextChangedListener(afterTextChangedListener)
         passwordEditText.addTextChangedListener(afterTextChangedListener)
+
+        // allow pressing "Enter" on keyboard to submit
         passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 usernameEditText.setText("")
@@ -165,7 +180,6 @@ class LoginFragment : Fragment() {
 
     private fun updateUIWithUser(model: QRCodeView) {
         val welcome = getString(R.string.welcome)
-        // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
     }

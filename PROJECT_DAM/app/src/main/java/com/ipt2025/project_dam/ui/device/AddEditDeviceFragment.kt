@@ -19,17 +19,17 @@ import com.ipt2025.project_dam.data.api.DeviceUpdateRequest
 import com.ipt2025.project_dam.data.api.DevicesAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SitesAPIService
-import com.ipt2025.project_dam.databinding.FragmentAddEditDeviceBinding
-import com.ipt2025.project_dam.databinding.ItemDeviceCheckboxBinding
+import com.ipt2025.project_dam.databinding.FragmentDeviceAddEditBinding
+import com.ipt2025.project_dam.databinding.FragmentDeviceDetailsConnectedDeviceCheckboxBinding
 import kotlinx.coroutines.launch
 
 class AddEditDeviceFragment : Fragment() {
 
-    private var _binding: FragmentAddEditDeviceBinding? = null
+    private var _binding: FragmentDeviceAddEditBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var isEditMode = false
+    private var isEditMode = false // same fragment does creation and editing (post & put)
     private var deviceId: String? = null
     private var selectedSiteId: String? = null
     private var sites = listOf<SiteOption>()
@@ -41,7 +41,7 @@ class AddEditDeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddEditDeviceBinding.inflate(inflater, container, false)
+        _binding = FragmentDeviceAddEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -52,6 +52,13 @@ class AddEditDeviceFragment : Fragment() {
         arguments?.let {
             isEditMode = it.getBoolean("isEditMode", false)
             deviceId = it.getString("_id")
+        }
+
+        // check permission and navigate back if unauthorized
+        if (isEditMode && !RetrofitProvider.canEditDevice() || !isEditMode && !RetrofitProvider.canCreateDevices()) {
+            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+            return
         }
 
         setupButton()
@@ -65,6 +72,9 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * Update title based on mode (add or edit)
+     */
     private fun setupButton() {
         binding.btnSave.text = if (isEditMode) "Update Device" else "Create Device"
 
@@ -79,6 +89,10 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * populate recyclerview input with other devices to select the connected devices
+     * checkbox with devices
+     */
     private fun setupRecyclerView() {
         deviceSelectionAdapter = DeviceSelectionAdapter(
             emptyList(),
@@ -96,16 +110,23 @@ class AddEditDeviceFragment : Fragment() {
         binding.rvDeviceSelection.adapter = deviceSelectionAdapter
     }
 
+    /**
+     * connected devices count
+     */
     private fun updateSelectedDeviceCount() {
         binding.tvSelectedDeviceCount.hint = "Selected: ${selectedConnectedDevices.size} device(s)"
     }
 
+    /**
+     * load dropdown with sites to select at which site the device is located
+     */
     private fun loadSites() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(SitesAPIService::class.java)
-                val sitesResponse = apiService.getSites(1, 100)
+                val sitesResponse = apiService.getSites(1, 100) // get sites
 
+                // render site in the dropdown
                 sites = sitesResponse.sites.map { site ->
                     SiteOption(site._id, "${site.localName} (${site.type}, ${site.country})")
                 }
@@ -134,6 +155,9 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * load connected devices
+     */
     private fun loadAllDevices() {
         lifecycleScope.launch {
             try {
@@ -165,13 +189,16 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * isEditMode == true, load existing device information
+     */
     private fun loadDeviceData(deviceId: String) {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
                 val device = apiService.getDeviceDetails(deviceId)
 
-                // Populate fields with existing data using Binding
+                // populate fields with existing data using Binding
                 binding.etVendor.setText(device.vendor)
                 binding.etDeviceType.setText(device.type)
                 binding.etCategory.setText(device.category)
@@ -179,17 +206,17 @@ class AddEditDeviceFragment : Fragment() {
                 binding.etDeviceMacAddress.setText(device.macAddress)
                 binding.etState.setText(device.state)
 
-                // Find and set the site in dropdown
+                // find and set the site in dropdown
                 val siteName = "${device.site.type} - ${device.site.country}"
                 binding.actvSite.setText(siteName)
                 selectedSiteId = device.site._id
 
-                // Load connected devices
+                // load connected devices
                 device.connectedDevices.forEach { connectedDevice ->
                     selectedConnectedDevices.add(connectedDevice._id)
                 }
 
-                // Update device selection list
+                // update device selection list
                 deviceSelectionAdapter.setSelectedDevices(selectedConnectedDevices)
                 updateSelectedDeviceCount()
 
@@ -204,10 +231,13 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * validate values in input fields
+     */
     private fun validateInputs(): Boolean {
         var isValid = true
 
-        // Clear previous errors
+        // clear previous errors
         binding.etVendor.error = null
         binding.etDeviceType.error = null
         binding.etCategory.error = null
@@ -215,37 +245,44 @@ class AddEditDeviceFragment : Fragment() {
         binding.etDeviceMacAddress.error = null
         binding.etState.error = null
 
-        // Required fields validation
+        // required fields validation
+        // vendor isn't null
         if (binding.etVendor.text.isNullOrEmpty()) {
             binding.etVendor.error = "Vendor is required"
             isValid = false
         }
 
+        // device type isn't null
         if (binding.etDeviceType.text.isNullOrEmpty()) {
             binding.etDeviceType.error = "Type is required"
             isValid = false
         }
 
+        // device category isn't null
         if (binding.etCategory.text.isNullOrEmpty()) {
             binding.etCategory.error = "Category is required"
             isValid = false
         }
 
+        // device serial number isn't null
         if (binding.etSerialNumber.text.isNullOrEmpty()) {
             binding.etSerialNumber.error = "Serial number is required"
             isValid = false
         }
 
+        // device MAC address isn't null
         if (binding.etDeviceMacAddress.text.isNullOrEmpty()) {
             binding.etDeviceMacAddress.error = "MAC address is required"
             isValid = false
         }
 
+        // device operational status isn't null
         if (binding.etState.text.isNullOrEmpty()) {
             binding.etState.error = "State is required"
             isValid = false
         }
 
+        // sites dropdown must have a value selected
         if (selectedSiteId == null) {
             Toast.makeText(requireContext(), "Please select a site", Toast.LENGTH_SHORT).show()
             isValid = false
@@ -254,11 +291,16 @@ class AddEditDeviceFragment : Fragment() {
         return isValid
     }
 
+    /**
+     * isEditMode == false
+     * create need device
+     */
     private fun createDevice() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
 
+                //device object
                 val deviceRequest = DeviceCreateRequest(
                     vendor = binding.etVendor.text.toString(),
                     category = binding.etCategory.text.toString(),
@@ -270,8 +312,6 @@ class AddEditDeviceFragment : Fragment() {
                     connectedDevices = selectedConnectedDevices.toList(),
                     isActive = true
                 )
-
-                Log.d("deviceRequest create", Gson().toJson(deviceRequest))
 
                 val response = apiService.createDevice(deviceRequest)
 
@@ -294,11 +334,17 @@ class AddEditDeviceFragment : Fragment() {
         }
     }
 
+    /**
+     * isEditMode == true
+     * update existing device
+     */
     private fun updateDevice() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
+
                 deviceId?.let { id ->
+                    //create new device object with input fields
                     val deviceRequest = DeviceUpdateRequest(
                         vendor = binding.etVendor.text.toString(),
                         category = binding.etCategory.text.toString(),
@@ -311,6 +357,7 @@ class AddEditDeviceFragment : Fragment() {
                         isActive = true
                     )
 
+                    // call api endpoint
                     val response = apiService.updateDevice(id, deviceRequest)
 
                     if (response.isSuccessful) {
@@ -336,8 +383,11 @@ class AddEditDeviceFragment : Fragment() {
         _binding = null
     }
 
-    // data classes for dropdown options
+    // data class for site dropdown options
     data class SiteOption(val id: String, val name: String)
+
+
+    // data class for connected devices dropdown options
     data class DeviceOption(val id: String, val displayName: String)
 
     // recyclerView adapter for device selection with Binding support
@@ -347,10 +397,10 @@ class AddEditDeviceFragment : Fragment() {
         private val onCheckChanged: (String, Boolean) -> Unit
     ) : RecyclerView.Adapter<DeviceSelectionAdapter.ViewHolder>() {
 
-        inner class ViewHolder(val binding: ItemDeviceCheckboxBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: FragmentDeviceDetailsConnectedDeviceCheckboxBinding) : RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ItemDeviceCheckboxBinding.inflate(
+            val binding = FragmentDeviceDetailsConnectedDeviceCheckboxBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

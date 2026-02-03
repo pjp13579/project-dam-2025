@@ -110,7 +110,7 @@ interface SitesAPIService {
         @Body site: SiteUpdateRequest
     ): Response<SiteDataResponse>
 
-    // delete a site
+    // soft delete a site
     @DELETE("sites/{siteId}")
     suspend fun deleteSite(@Path("siteId") siteId: String): Response<Unit>
 }

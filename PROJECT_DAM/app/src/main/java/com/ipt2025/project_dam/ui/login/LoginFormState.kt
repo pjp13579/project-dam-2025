@@ -1,7 +1,7 @@
 package com.ipt2025.project_dam.ui.login
 
 /**
- * Data validation state of the login form.
+ * data validation state of the login form.
  */
 data class LoginFormState(
     val usernameError: Int? = null,

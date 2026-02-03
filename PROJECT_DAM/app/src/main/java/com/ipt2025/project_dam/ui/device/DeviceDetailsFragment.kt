@@ -18,6 +18,9 @@ import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.databinding.FragmentDeviceDetailBinding
 import kotlinx.coroutines.launch
 
+/**
+ * view that displays every information about a device
+ */
 class DeviceDetailsFragment : Fragment() {
 
     private var _binding: FragmentDeviceDetailBinding? = null
@@ -37,6 +40,7 @@ class DeviceDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // Get deviceId from arguments
         deviceId = arguments?.getString("_id")
 
@@ -48,8 +52,36 @@ class DeviceDetailsFragment : Fragment() {
 
         setupUI()
         loadDeviceDetails()
+        setupUIBasedOnPermissions()
+
     }
 
+    /**
+     * hide create device button navigation if user doesn't have permission
+     */
+    private fun setupUIBasedOnPermissions() {
+        // hide the edit site button if user doesn't have permission
+        if (!RetrofitProvider.canEditDevice()) {
+            binding.btnEditDevice.visibility = View.GONE
+        } else {
+            binding.btnEditDevice.visibility = View.VISIBLE
+        }
+
+        if (!RetrofitProvider.canDeleteDevice()) {
+            binding.btnDeleteDevice.visibility = View.GONE
+        } else {
+            binding.btnDeleteDevice.visibility = View.VISIBLE
+        }
+
+        if (!RetrofitProvider.canDeleteDevice() && !RetrofitProvider.canEditDevice()) {
+            binding.deviceDetailsLinearLayoutHolder.visibility = View.GONE
+        }
+    }
+
+    /**
+     * setup navigation for ui components
+     * setup recycler view contents
+     */
     private fun setupUI() {
         // Setup back button in toolbar
         binding.topAppBar.setNavigationOnClickListener {
@@ -62,13 +94,17 @@ class DeviceDetailsFragment : Fragment() {
         }
 
         // Setup edit button
-        binding.btnEditDevice.setOnClickListener {
-            navigateToEditDevice()
+        if (RetrofitProvider.canEditDevice()) {
+            binding.btnEditDevice.setOnClickListener {
+                navigateToEditDevice()
+            }
         }
 
         // Setup delete button
-        binding.btnDeleteDevice.setOnClickListener {
-            showDeleteConfirmationDialog()
+        if (RetrofitProvider.canDeleteDevice()) {
+            binding.btnDeleteDevice.setOnClickListener {
+                showDeleteConfirmationDialog()
+            }
         }
 
         setupRecyclerView()
@@ -80,16 +116,26 @@ class DeviceDetailsFragment : Fragment() {
         binding.rvConnectedDevices.layoutManager = LinearLayoutManager(requireContext())
     }
 
+    /**
+     * set metadata required by add/edit device  fragment and set navigation
+     */
     private fun navigateToEditDevice() {
+        // isEditMode distinguish between add and edit. same fragment do add and edit.
         deviceId?.let { id ->
             val bundle = Bundle().apply {
                 putString("_id", id)
                 putBoolean("isEditMode", true)
             }
-            findNavController().navigate(R.id.action_deviceDetailsFragment_to_addEditDeviceFragment, bundle)
+            findNavController().navigate(
+                R.id.action_deviceDetailsFragment_to_addEditDeviceFragment,
+                bundle
+            )
         }
     }
 
+    /**
+     * confirmation pop-up for soft deleting device
+     */
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(requireContext().getString(R.string.alert_delete_device))
@@ -101,18 +147,34 @@ class DeviceDetailsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * soft delete device
+     */
     private fun deleteDevice() {
+        if (!RetrofitProvider.canDeleteDevice()) {
+            Toast.makeText(context, "Access denied. Can't delete device", Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             try {
+
                 deviceId?.let { id ->
                     val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
                     val response = apiService.deleteDevice(id)
 
                     if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), requireContext().getString(R.string.success_delete_device), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().getString(R.string.success_delete_device),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         findNavController().popBackStack()
                     } else {
-                        Toast.makeText(requireContext(), requireContext().getString(R.string.fail_delete_device), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().getString(R.string.fail_delete_device),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } catch (e: Exception) {
@@ -122,6 +184,9 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * given a device id, request detailed information
+     */
     private fun loadDeviceDetails() {
         deviceId?.let { id ->
             // Show loading state
@@ -139,12 +204,14 @@ class DeviceDetailsFragment : Fragment() {
                         is DeviceDetailsUiState.Loading -> {
                             showLoading(true)
                         }
+
                         is DeviceDetailsUiState.Success -> {
                             val device = state.device
                             displayDeviceData(device)
                             binding.scrollView.visibility = View.VISIBLE
                             binding.errorContainer.visibility = View.GONE
                         }
+
                         is DeviceDetailsUiState.Error -> {
                             showErrorMessage("Error: ${state.message}")
                             binding.scrollView.visibility = View.GONE
@@ -156,23 +223,37 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * when editing a device, data fields are populated with the existing device information
+     * this function populates the text fields with the existing device information
+     */
     private fun displayDeviceData(device: DeviceDetailDataResponse) {
         // Device information
         val ctx = requireContext()
         binding.vendor.text = ctx.getString(R.string.label_vendor).replace("{value}", device.vendor)
-        binding.category.text = ctx.getString(R.string.label_category).replace("{value}", device.category)
-        binding.deviceTypeInfo.text = ctx.getString(R.string.label_type).replace("{value}", device.type)
-        binding.serialNumber.text = ctx.getString(R.string.label_serial_number).replace("{value}", device.serialNumber)
-        binding.MacAddress.text = ctx.getString(R.string.label_mac_address).replace("{value}", device.macAddress)
+        binding.category.text =
+            ctx.getString(R.string.label_category).replace("{value}", device.category)
+        binding.deviceTypeInfo.text =
+            ctx.getString(R.string.label_type).replace("{value}", device.type)
+        binding.serialNumber.text =
+            ctx.getString(R.string.label_serial_number).replace("{value}", device.serialNumber)
+        binding.MacAddress.text =
+            ctx.getString(R.string.label_mac_address).replace("{value}", device.macAddress)
         binding.state.text = ctx.getString(R.string.label_state).replace("{value}", device.state)
 
         // Site information
-        binding.siteType.text = ctx.getString(R.string.label_site_type).replace("{value}", device.site.type)
-        binding.siteCountry.text = ctx.getString(R.string.label_country).replace("{value}", device.site.country)
-        binding.siteCity.text = ctx.getString(R.string.label_city).replace("{value}", device.site.address.city)
-        binding.siteState.text = ctx.getString(R.string.label_state).replace("{value}", device.site.address.state)
-        binding.siteStreet.text = ctx.getString(R.string.label_street).replace("{value}", device.site.address.street)
-        binding.siteZipcode.text = ctx.getString(R.string.label_zip_code).replace("{value}", device.site.address.zipCode)
+        binding.siteType.text =
+            ctx.getString(R.string.label_site_type).replace("{value}", device.site.type)
+        binding.siteCountry.text =
+            ctx.getString(R.string.label_country).replace("{value}", device.site.country)
+        binding.siteCity.text =
+            ctx.getString(R.string.label_city).replace("{value}", device.site.address.city)
+        binding.siteState.text =
+            ctx.getString(R.string.label_state).replace("{value}", device.site.address.state)
+        binding.siteStreet.text =
+            ctx.getString(R.string.label_street).replace("{value}", device.site.address.street)
+        binding.siteZipcode.text =
+            ctx.getString(R.string.label_zip_code).replace("{value}", device.site.address.zipCode)
 
         // Connected devices
         adapter.setConnectedDevices(device.connectedDevices)
@@ -185,6 +266,9 @@ class DeviceDetailsFragment : Fragment() {
         }
     }
 
+    /**
+     * show loading spinner while device details is being received
+     */
     private fun showLoading(show: Boolean) {
         binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
         if (show) {

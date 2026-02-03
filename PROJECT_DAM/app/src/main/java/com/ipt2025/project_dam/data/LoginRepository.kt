@@ -18,22 +18,15 @@ class LoginRepository(val dataSource: LoginDataSource) {
     var user: UserLoginResponse? = null
         private set
 
-    // check if we are currently logged in
-    val isLoggedIn: Boolean
-        get() = user != null
-
     init {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
         user = null
     }
 
-    fun logout() {
-        user = null
-        dataSource.logout()
-    }
-
-    // tries to login via the datasource
+    /**
+     *  tries to login via the datasource
+     */
     suspend fun login(username: String, password: String): Result<UserLoginResponse> {
         // // preform login network API request
         val result = dataSource.login(username, password)
@@ -45,7 +38,9 @@ class LoginRepository(val dataSource: LoginDataSource) {
         return result
     }
 
-    // saves user info to the provider so other calls can use the token
+    /**
+     * saves user info to the provider so other calls can use the token
+     */
     private fun setLoggedInUser(loggedInUser: UserLoginResponse) {
         this.user = loggedInUser
         RetrofitProvider.setLoggedInUser(loggedInUser);

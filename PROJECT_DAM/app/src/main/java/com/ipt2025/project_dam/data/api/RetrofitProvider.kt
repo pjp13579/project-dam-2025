@@ -16,6 +16,7 @@ object RetrofitProvider {
     private var authToken: String? = null
     private var user : UserData? = null
 
+
     // stores the token in memory
     fun updateToken(token: String) {
         authToken = token
@@ -31,13 +32,83 @@ object RetrofitProvider {
         authToken = null
     }
 
-    // after successful login, store the provided login/access token
+    // get the current user's role (specified in the JWT token)
+    fun getUserRole(): String? {
+        return user?.role
+    }
+
+    // role checking
+    fun isAdmin(): Boolean {
+        return user?.role?.equals("admin", ignoreCase = true) ?: false
+    }
+
+    fun isTech(): Boolean {
+        return user?.role?.equals("technician", ignoreCase = true) ?: false
+    }
+
+    fun isGuest(): Boolean {
+        return user?.role?.equals("guest", ignoreCase = true) ?: false
+    }
+
+    fun canViewDevices(): Boolean {
+        return isAdmin() || isTech() || isGuest()
+    }
+
+    fun canViewSites(): Boolean {
+        return isAdmin() || isTech() || isGuest()
+    }
+
+    fun canViewUsers(): Boolean {
+        return isAdmin()
+    }
+
+    fun canCreateDevices(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canCreateSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canCreateUser(): Boolean {
+        return isAdmin()
+    }
+
+    fun canEditDevice(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canEditSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canEditUser(): Boolean {
+        return isAdmin()
+    }
+
+    fun canDeleteDevice(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canDeleteSite(): Boolean {
+        return isAdmin() || isTech()
+    }
+
+    fun canDeleteUser(): Boolean {
+        return isAdmin()
+    }
+
+    /**
+     *  after successful login, store the provided login/access token
+     */
     fun setLoggedInUser(loggedInUser: UserLoginResponse){
         authToken = loggedInUser.token
         user = loggedInUser.user
     }
 
-    // sets up retrofit with a custom interceptor (automatically inject JWT auth token into request header)
+    /**
+     * sets up retrofit with a custom interceptor (automatically inject JWT auth token into request header)
+     */
     fun <T> create(service: Class<T>): T {
         val client = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
