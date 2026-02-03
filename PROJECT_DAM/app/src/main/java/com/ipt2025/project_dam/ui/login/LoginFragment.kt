@@ -1,9 +1,7 @@
 package com.ipt2025.project_dam.ui.login
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,22 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.ipt2025.project_dam.databinding.FragmentLoginBinding
-
 import com.ipt2025.project_dam.R
-import com.ipt2025.project_dam.data.LoginDataSource
 import com.ipt2025.project_dam.data.TokenManager
 import com.ipt2025.project_dam.data.api.LoginAPIService
 import com.ipt2025.project_dam.data.api.RetrofitProvider
-import com.ipt2025.project_dam.data.api.SitesAPIService
 import com.ipt2025.project_dam.data.api.UserLoginResponse
-import com.ipt2025.project_dam.data.api.UserLoginTokenRequest
+import com.ipt2025.project_dam.databinding.FragmentLoginBinding
 import com.ipt2025.project_dam.ui.qrcode.QRCodeView
-import com.ipt2025.project_dam.ui.site.SiteRecyclerViewAdapter
 import kotlinx.coroutines.launch
+import java.util.Locale
+
 
 /**
  * preforms login
@@ -65,6 +63,7 @@ class LoginFragment : Fragment() {
         val passwordEditText = binding.password
         val loginButton = binding.login
         val loadingProgressBar = binding.loading
+        val privacyPolicyButton = binding.privacyPolicy
 
         /**
          * AUTO-LOGIN LOGIC:
@@ -175,6 +174,15 @@ class LoginFragment : Fragment() {
                 usernameEditText.text.toString(),
                 passwordEditText.text.toString()
             )
+        }
+
+        privacyPolicyButton.setOnClickListener {
+            //Show the correct privacy policy based on language
+            val locale = Locale.getDefault().getDisplayLanguage();
+            val url = if (locale == "português") "https://caconetworks.azurewebsites.net/privacy-policy-pt" else "https://caconetworks.azurewebsites.net/privacy-policy"
+            val uri = Uri.parse(url)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
         }
     }
 

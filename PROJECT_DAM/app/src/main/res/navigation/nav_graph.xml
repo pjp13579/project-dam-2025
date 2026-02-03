@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/dashboard"
-        android:name="com.ipt2025.project_dam.Dashboard"
+        android:name="com.ipt2025.project_dam.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard">
         <action

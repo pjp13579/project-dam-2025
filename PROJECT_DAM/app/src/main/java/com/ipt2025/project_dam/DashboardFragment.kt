@@ -1,23 +1,18 @@
 package com.ipt2025.project_dam
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.databinding.FragmentDashboardBinding
-import com.ipt2025.project_dam.databinding.FragmentDeviceListBinding
-import com.ipt2025.project_dam.databinding.FragmentUserListBinding
 
 /**
  *  simple hub screen with buttons to go to sites, devices, or users paginated list
  */
-class Dashboard : Fragment() {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
