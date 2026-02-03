@@ -26,7 +26,7 @@ app.use('/docs', swaggerUi.serve, async (_req: express.Request, res: express.Res
 
 // apply auth middleware to all routes except auth and docs
 app.use((req, res, next) => {
-	if (req.path === '/auth/login' || req.path.startsWith('/docs') || req.path.startsWith('/privacy-policy')) {
+	if (req.path === '/auth/login' || req.path.startsWith('/docs') || req.path.startsWith('/privacy-policy') || req.path.startsWith('/privacy-policy-pt')) {
 		return next();
 	}
 	expressAuthentication(req, 'jwt')
@@ -43,6 +43,10 @@ app.use((req, res, next) => {
 // serve privacy policy
 app.get("/privacy-policy", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/privacy.html"));
+});
+
+app.get("/privacy-policy-pt", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/privacypt.html"));
 });
 
 // register tsoa routes
