@@ -41,7 +41,7 @@ class SiteFragment : Fragment() {
 
         // check permission and navigate back if unauthorized
         if (!RetrofitProvider.canViewSites()) {
-            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
@@ -116,7 +116,7 @@ class SiteFragment : Fragment() {
             } else {
                 Toast.makeText(
                     context,
-                    "You don't have permission to create sites",
+                    getString(R.string.accessDenied),
                     Toast.LENGTH_SHORT
                 ).show()
             }

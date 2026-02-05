@@ -96,4 +96,6 @@
     <string name="error_updating_user">Erro ao atualizar utilizador: %s</string>
     <string name="title_users">Utilizadores</string>
     <string name="privacy_policy">Politica de Privacidade</string>
+    <string name="accessDenied">Acesso Negado</string>
+
 </resources>

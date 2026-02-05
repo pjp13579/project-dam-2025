@@ -1,5 +1,6 @@
 package com.ipt2025.project_dam.ui.device
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.DeviceCreateRequest
 import com.ipt2025.project_dam.data.api.DeviceUpdateRequest
@@ -22,10 +22,15 @@ import com.ipt2025.project_dam.data.api.SitesAPIService
 import com.ipt2025.project_dam.databinding.FragmentDeviceAddEditBinding
 import com.ipt2025.project_dam.databinding.FragmentDeviceDetailsConnectedDeviceCheckboxBinding
 import kotlinx.coroutines.launch
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.Filter
+import java.util.Locale
 
 class AddEditDeviceFragment : Fragment() {
 
     private var _binding: FragmentDeviceAddEditBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -34,8 +39,10 @@ class AddEditDeviceFragment : Fragment() {
     private var selectedSiteId: String? = null
     private var sites = listOf<SiteOption>()
     private var allDevices = listOf<DeviceOption>()
+    private var displayedDevices = listOf<DeviceOption>() // filtered list after text input
     private var selectedConnectedDevices = mutableSetOf<String>()
     private lateinit var deviceSelectionAdapter: DeviceSelectionAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +55,14 @@ class AddEditDeviceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /*        binding.etSearchConnected.addTextChangedListener(object : android.text.TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        filterDevices(s.toString())
+                    }
+                    override fun afterTextChanged(s: android.text.Editable?) {}
+                })*/
+
         // get mode from arguments. Create device or edit device
         arguments?.let {
             isEditMode = it.getBoolean("isEditMode", false)
@@ -56,7 +71,7 @@ class AddEditDeviceFragment : Fragment() {
 
         // check permission and navigate back if unauthorized
         if (isEditMode && !RetrofitProvider.canEditDevice() || !isEditMode && !RetrofitProvider.canCreateDevices()) {
-            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
@@ -65,6 +80,7 @@ class AddEditDeviceFragment : Fragment() {
         loadSites()
         setupRecyclerView()
         loadAllDevices()
+        setupSearchListeners()
 
         // if edit mode, load existing data
         if (isEditMode && deviceId != null) {
@@ -87,6 +103,34 @@ class AddEditDeviceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    /**
+     * Set up the TextWatcher for the Connected Devices search bar
+     */
+    private fun setupSearchListeners() {
+        binding.etSearchConnected.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterConnectedDevices(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    /**
+     * Filter the devices list based on the search query
+     */
+    private fun filterConnectedDevices(query: String) {
+        displayedDevices = if (query.isEmpty()) {
+            allDevices
+        } else {
+            allDevices.filter {
+                it.displayName.contains(query, ignoreCase = true)
+            }
+        }
+        deviceSelectionAdapter.updateDevices(displayedDevices)
     }
 
     /**
@@ -124,24 +168,27 @@ class AddEditDeviceFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(SitesAPIService::class.java)
-                val sitesResponse = apiService.getSites(1, 100) // get sites
+                val sitesResponse = apiService.getSites(1, 100)
 
-                // render site in the dropdown
                 sites = sitesResponse.sites.map { site ->
                     SiteOption(site._id, "${site.localName} (${site.type}, ${site.country})")
                 }
 
                 val siteNames = sites.map { it.name }
+
+                // Use standard ArrayAdapter (no filtering)
                 val adapter = ArrayAdapter(
                     requireContext(),
                     android.R.layout.simple_dropdown_item_1line,
                     siteNames
                 )
+
                 binding.actvSite.setAdapter(adapter)
 
-                // select the site ID if selected on the sites dropdown
+                // Handle selection
                 binding.actvSite.setOnItemClickListener { _, _, position, _ ->
                     selectedSiteId = sites[position].id
+                    binding.actvSite.error = null
                 }
 
             } catch (e: Exception) {
@@ -164,7 +211,6 @@ class AddEditDeviceFragment : Fragment() {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
                 val devicesResponse = apiService.getDevices(1, 100)
 
-                // filter out current device if in edit mode.
                 val filteredDevices = if (isEditMode && deviceId != null) {
                     devicesResponse.devices.filter { it._id != deviceId }
                 } else {
@@ -172,19 +218,20 @@ class AddEditDeviceFragment : Fragment() {
                 }
 
                 allDevices = filteredDevices.map { device ->
-                    DeviceOption(device._id, "${device.vendor} ${device.type} (${device.serialNumber})")
+                    DeviceOption(
+                        device._id,
+                        "${device.vendor} ${device.type} (${device.serialNumber})"
+                    )
                 }
 
-                // add devices to the list
-                deviceSelectionAdapter.updateDevices(allDevices)
+                // Initially display all devices
+                displayedDevices = allDevices
+                deviceSelectionAdapter.updateDevices(displayedDevices)
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to load devices",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Failed to load devices", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -212,12 +259,13 @@ class AddEditDeviceFragment : Fragment() {
                 selectedSiteId = device.site._id
 
                 // load connected devices
-                device.connectedDevices.forEach { connectedDevice ->
-                    selectedConnectedDevices.add(connectedDevice._id)
-                }
+                val existingDeviceIds = device.connectedDevices.map { it._id }.toSet()
 
-                // update device selection list
-                deviceSelectionAdapter.setSelectedDevices(selectedConnectedDevices)
+                // pass connected devices to the adapter
+                // the adapter will reset selectedConnectedDevices, and use the connect devices form above
+                deviceSelectionAdapter.setSelectedDevices(existingDeviceIds)
+
+                // update the counter UI
                 updateSelectedDeviceCount()
 
             } catch (e: Exception) {
@@ -245,46 +293,28 @@ class AddEditDeviceFragment : Fragment() {
         binding.etDeviceMacAddress.error = null
         binding.etState.error = null
 
-        // required fields validation
-        // vendor isn't null
+        // run validations
         if (binding.etVendor.text.isNullOrEmpty()) {
-            binding.etVendor.error = "Vendor is required"
-            isValid = false
+            binding.etVendor.error = "Required"; isValid = false
         }
-
-        // device type isn't null
         if (binding.etDeviceType.text.isNullOrEmpty()) {
-            binding.etDeviceType.error = "Type is required"
-            isValid = false
+            binding.etDeviceType.error = "Required"; isValid = false
         }
-
-        // device category isn't null
         if (binding.etCategory.text.isNullOrEmpty()) {
-            binding.etCategory.error = "Category is required"
-            isValid = false
+            binding.etCategory.error = "Required"; isValid = false
         }
-
-        // device serial number isn't null
         if (binding.etSerialNumber.text.isNullOrEmpty()) {
-            binding.etSerialNumber.error = "Serial number is required"
-            isValid = false
+            binding.etSerialNumber.error = "Required"; isValid = false
         }
-
-        // device MAC address isn't null
         if (binding.etDeviceMacAddress.text.isNullOrEmpty()) {
-            binding.etDeviceMacAddress.error = "MAC address is required"
-            isValid = false
+            binding.etDeviceMacAddress.error = "Required"; isValid = false
         }
-
-        // device operational status isn't null
         if (binding.etState.text.isNullOrEmpty()) {
-            binding.etState.error = "State is required"
-            isValid = false
+            binding.etState.error = "Required"; isValid = false
         }
 
-        // sites dropdown must have a value selected
         if (selectedSiteId == null) {
-            Toast.makeText(requireContext(), "Please select a site", Toast.LENGTH_SHORT).show()
+            binding.actvSite.error = "Please select a valid site from the list"
             isValid = false
         }
 
@@ -299,8 +329,6 @@ class AddEditDeviceFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
-
-                //device object
                 val deviceRequest = DeviceCreateRequest(
                     vendor = binding.etVendor.text.toString(),
                     category = binding.etCategory.text.toString(),
@@ -312,23 +340,18 @@ class AddEditDeviceFragment : Fragment() {
                     connectedDevices = selectedConnectedDevices.toList(),
                     isActive = true
                 )
-
                 val response = apiService.createDevice(deviceRequest)
-
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Device created successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Device created", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 } else {
-                    val errorBody = response.errorBody()?.string() ?: "Unknown error"
                     Toast.makeText(
                         requireContext(),
-                        "Failed to create device (${response.code()}): ${response.message()}",
+                        "Failed: ${response.message()}",
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
             } catch (e: Exception) {
-                e.printStackTrace()
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -342,9 +365,7 @@ class AddEditDeviceFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(DevicesAPIService::class.java)
-
                 deviceId?.let { id ->
-                    //create new device object with input fields
                     val deviceRequest = DeviceUpdateRequest(
                         vendor = binding.etVendor.text.toString(),
                         category = binding.etCategory.text.toString(),
@@ -356,23 +377,20 @@ class AddEditDeviceFragment : Fragment() {
                         connectedDevices = selectedConnectedDevices.toList(),
                         isActive = true
                     )
-
-                    // call api endpoint
                     val response = apiService.updateDevice(id, deviceRequest)
-
                     if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), "Device updated successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Device updated", Toast.LENGTH_SHORT)
+                            .show()
                         findNavController().popBackStack()
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Failed to update device (${response.code()}): ${response.message()}",
+                            "Failed: ${response.message()}",
                             Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -390,29 +408,76 @@ class AddEditDeviceFragment : Fragment() {
     // data class for connected devices dropdown options
     data class DeviceOption(val id: String, val displayName: String)
 
-    // recyclerView adapter for device selection with Binding support
+    /**
+     * custom adapter for site dropdown. implements the search filtering feature
+     * starts with type search
+     */
+    inner class SiteFilterAdapter(
+        context: Context,
+        resource: Int,
+        private val originalList: List<SiteOption>
+    ) : ArrayAdapter<SiteOption>(context, resource, originalList) {
+
+        private val filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = FilterResults()
+                val suggestions = if (constraint.isNullOrEmpty()) {
+                    originalList
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.ROOT).trim()
+                    originalList.filter {
+                        it.name.lowercase(Locale.ROOT).contains(filterPattern)
+                    }
+                }
+                results.values = suggestions
+                results.count = suggestions.size
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                clear()
+                if (results != null && results.count > 0) {
+                    addAll(results.values as List<SiteOption>)
+                }
+                notifyDataSetChanged()
+            }
+        }
+
+        override fun getFilter(): Filter {
+            return filter
+        }
+    }
+
+    /**
+     * device selection adapter
+     */
     inner class DeviceSelectionAdapter(
         private var devices: List<DeviceOption>,
         private val selectedDevices: MutableSet<String>,
         private val onCheckChanged: (String, Boolean) -> Unit
     ) : RecyclerView.Adapter<DeviceSelectionAdapter.ViewHolder>() {
 
-        inner class ViewHolder(val binding: FragmentDeviceDetailsConnectedDeviceCheckboxBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: FragmentDeviceDetailsConnectedDeviceCheckboxBinding) :
+            RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = FragmentDeviceDetailsConnectedDeviceCheckboxBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
             return ViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val device = devices[position]
+
+            // clear listener to prevent accidental triggering
+            holder.binding.checkboxDevice.setOnCheckedChangeListener(null)
+
+            // set matched devices
             holder.binding.checkboxDevice.text = device.displayName
             holder.binding.checkboxDevice.isChecked = selectedDevices.contains(device.id)
 
+            // add back the seach listener
             holder.binding.checkboxDevice.setOnCheckedChangeListener { _, isChecked ->
                 onCheckChanged(device.id, isChecked)
             }
@@ -431,4 +496,13 @@ class AddEditDeviceFragment : Fragment() {
             notifyDataSetChanged()
         }
     }
+    /*
+        private fun filterDevices(query: String) {
+            val filteredList = if (query.isEmpty()) {
+                allDevices
+            } else {
+                allDevices.filter { it.displayName.contains(query, ignoreCase = true) }
+            }
+            deviceSelectionAdapter.updateDevices(filteredList)
+        }*/
 }

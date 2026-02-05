@@ -28,6 +28,8 @@ import java.util.regex.Pattern
  */
 class QRCodeView : Fragment() {
 
+    private lateinit var progressBar: ProgressBar
+
     private lateinit var messageText: TextView
 
     override fun onCreateView(
@@ -35,6 +37,8 @@ class QRCodeView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_qrcode, container, false)
+
+        progressBar = view.findViewById(R.id.progressBar)
 
         messageText = view.findViewById(R.id.messageText)
 
@@ -70,6 +74,8 @@ class QRCodeView : Fragment() {
      * configures the zxing scanner options
      */
     private fun startQRCodeScan() {
+        // Hide progress bar, show scanning message
+        progressBar.visibility = View.GONE
 
         messageText.text = "Point camera at QR code"
 
@@ -97,6 +103,7 @@ class QRCodeView : Fragment() {
             } else {
                 val scannedId = result.contents.trim()
                 messageText.text = "Validating code..."
+                progressBar.visibility = View.VISIBLE
 
                 // validate the scanned string format
                 if (isValidMongoObjectId(scannedId)) {
@@ -105,6 +112,8 @@ class QRCodeView : Fragment() {
                     // if not exists, display invalid reading and camera will reopen shortly (or it should at least lol)
                     checkDeviceExists(scannedId)
                 } else {
+                    progressBar.visibility = View.GONE
+
                     messageText.text = "Invalid QR code format"
                     Toast.makeText(
                         requireContext(),
@@ -216,6 +225,38 @@ class QRCodeView : Fragment() {
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startQRCodeScan()
+            } else {
+                // Permission denied
+                messageText.text = "Camera permission required"
+
+                Toast.makeText(
+                    requireContext(),
+                    "Camera permission is required to scan QR codes. Please enable it in settings.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // Optionally, you could show a button to open app settings
+                // or navigate back after a delay
+                view?.postDelayed({
+                    findNavController().navigateUp()
+                }, 3000)
+            }
+        }
+    }
+
+
+
 
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 1001

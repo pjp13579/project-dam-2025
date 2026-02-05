@@ -37,7 +37,7 @@ class UserDetailsFragment : Fragment() {
 
         // Check admin permission
         if (!RetrofitProvider.canViewUsers()) {
-            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }

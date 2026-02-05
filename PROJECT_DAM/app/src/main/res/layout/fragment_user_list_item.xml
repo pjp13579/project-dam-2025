@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            tools:text="John Doe" />
+            tools:text="username" />
 
         <TextView
             android:id="@+id/userEmail"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            tools:text="john.doe@example.com" />
+            tools:text="email" />
 
         <!-- role -->
         <com.google.android.material.chip.Chip

@@ -41,7 +41,7 @@ class UserFragment : Fragment() {
 
         // Check permission and navigate back if unauthorized
         if (!RetrofitProvider.canViewUsers()) {
-            Toast.makeText(context, "Access denied - Admin only", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
@@ -119,11 +119,11 @@ class UserFragment : Fragment() {
                 adapter.addUsers(response.users)
             } catch (e: CancellationException) { } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(
+                /*Toast.makeText(
                     context,
                     "Error fetching users: ${e.message}",
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
             }
         }
     }
@@ -139,7 +139,7 @@ class UserFragment : Fragment() {
             } else {
                 Toast.makeText(
                     context,
-                    "You don't have permission to create users",
+                    getString(R.string.accessDenied),
                     Toast.LENGTH_SHORT
                 ).show()
             }

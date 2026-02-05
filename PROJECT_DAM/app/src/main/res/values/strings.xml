@@ -96,5 +96,6 @@
     <string name="error_updating_user">Error updating user: %s</string>
     <string name="title_users">Users</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="accessDenied">Access Denied</string>
 
 </resources>

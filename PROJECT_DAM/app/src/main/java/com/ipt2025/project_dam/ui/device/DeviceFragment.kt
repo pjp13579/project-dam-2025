@@ -43,7 +43,7 @@ class DeviceFragment : Fragment() {
 
         // check permission to view existing devices and navigate back if unauthorized
         if (!RetrofitProvider.canViewDevices()) {
-            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
@@ -106,7 +106,7 @@ class DeviceFragment : Fragment() {
 
             } catch (e: CancellationException) { } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(context, "Error fetching devices: ${e.message}", Toast.LENGTH_SHORT).show()
+               // Toast.makeText(context, "Error fetching devices: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -120,7 +120,7 @@ class DeviceFragment : Fragment() {
             if (RetrofitProvider.canCreateDevices()) {
                 findNavController().navigate(R.id.action_deviceFragment_to_addEditDeviceFragment)
             } else {
-                Toast.makeText(context, "You don't have permission to create devices", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             }
         }
     }

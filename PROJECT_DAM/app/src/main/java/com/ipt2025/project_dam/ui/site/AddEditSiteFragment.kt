@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.ipt2025.project_dam.R
 import com.ipt2025.project_dam.data.api.RetrofitProvider
 import com.ipt2025.project_dam.data.api.SiteCreateRequest
 import com.ipt2025.project_dam.data.api.SiteUpdateRequest
@@ -44,7 +45,7 @@ class AddEditSiteFragment : Fragment() {
 
         // check permission and navigate back if unauthorized
         if (isEditMode && !RetrofitProvider.canEditSite() || !isEditMode && !RetrofitProvider.canCreateSite()) {
-            Toast.makeText(context, "Access denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.accessDenied), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }

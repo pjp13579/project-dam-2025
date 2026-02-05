@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:textSize="16sp"
-                        tools:text="Name: John Doe" />
+                        tools:text="Name: " />
 
                     <!-- username -->
                     <TextView
@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:textSize="16sp"
-                        tools:text="Email: john.doe@example.com" />
+                        tools:text="Email: " />
 
                     <!-- username -->
                     <TextView
@@ -74,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        tools:text="Role: Admin" />
+                        tools:text="Role: " />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
