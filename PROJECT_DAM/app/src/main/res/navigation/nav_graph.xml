@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/siteFragment"
         android:name="com.ipt2025.project_dam.ui.site.SiteFragment"
-        android:label="Sites"
+        android:label="@string/title_site"
         tools:layout="@layout/fragment_site_list">
         <action
             android:id="@+id/action_siteFragment_to_siteDetailsFragment"
@@ -143,7 +143,7 @@
     <fragment
         android:id="@+id/userFragment"
         android:name="com.ipt2025.project_dam.ui.user.UserFragment"
-        android:label="Users"
+        android:label="@string/title_users"
         tools:layout="@layout/fragment_user_list">
 
         <action
@@ -161,7 +161,7 @@
     <fragment
         android:id="@+id/userDetailsFragment"
         android:name="com.ipt2025.project_dam.ui.user.UserDetailsFragment"
-        android:label="User Details"
+        android:label="@string/title_users_details"
         tools:layout="@layout/fragment_user_details">
 
         <argument
@@ -182,7 +182,7 @@
     <fragment
         android:id="@+id/addEditUserFragment"
         android:name="com.ipt2025.project_dam.ui.user.AddEditUserFragment"
-        android:label="Add/Edit User"
+        android:label="@string/title_add_edit_user"
         tools:layout="@layout/fragment_user_add_edit">
 
         <argument

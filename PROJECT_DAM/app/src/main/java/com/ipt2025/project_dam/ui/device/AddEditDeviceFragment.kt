@@ -165,7 +165,7 @@ class AddEditDeviceFragment : Fragment() {
      * load dropdown with sites to select at which site the device is located
      */
     private fun loadSites() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val apiService = RetrofitProvider.create(SitesAPIService::class.java)
                 val sitesResponse = apiService.getSites(1, 100)
@@ -194,8 +194,8 @@ class AddEditDeviceFragment : Fragment() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(
-                    requireContext(),
-                    "Failed to load sites: ${e.message}",
+                    requireContext().applicationContext,
+                    "Failed to load sites",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -230,7 +230,7 @@ class AddEditDeviceFragment : Fragment() {
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Failed to load devices", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext().applicationContext, "Failed to load devices", Toast.LENGTH_SHORT)
                     .show()
             }
         }
