@@ -5,7 +5,13 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="fontFamily">roboto</item>
         <item name="android:fontFamily">roboto</item>
+        <item name="materialButtonStyle">@style/ButtonColor</item>
     </style>
 
     <style name="Theme.PROJECT_DAM" parent="Base.Theme.PROJECT_DAM" />
+    <style name="ButtonColor" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#689f38</item>
+        <item name="rippleColor">#c5e1a5</item>
+        <item name="textFillColor">#000</item>
+    </style>
 </resources>

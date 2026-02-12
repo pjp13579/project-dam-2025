@@ -10,9 +10,9 @@ android {
     defaultConfig {
         applicationId = "com.ipt2025.project_dam"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 3
+        versionName = "1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://caconetworks.azurewebsites.net/\"")
     }
