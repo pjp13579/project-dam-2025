@@ -3,6 +3,12 @@
     <style name="Base.Theme.PROJECT_DAM" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="materialButtonStyle">@style/ButtonColor</item>
+        <item name="materialButtonStyle">@style/ButtonColorDark</item>
+    </style>
+    <style name="ButtonColorDelete" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#A00</item>
+        <item name="rippleColor">#c5e1a5</item>
+        <item name="textFillColor">#FFF</item>
+        <item name="android:textColor">#FFF</item>
     </style>
 </resources>

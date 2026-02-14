@@ -79,14 +79,13 @@
             android:id="@+id/siteDetailsLinearLayoutHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_dark"
+            android:background="@color/bottom_bar"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <!-- edit site button-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_edit_site"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -96,6 +95,7 @@
             <!-- soft delete button-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_site"
+                style="@style/ButtonColorDelete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity() {
 
         val tokenManager = TokenManager(this)
 
+        bottomNav.itemIconSize = 0;
+
         // handles navigation for bottom bar clicks
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {

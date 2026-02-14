@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@drawable/bg_gradient"
     tools:context=".MainActivity">
 
 
@@ -30,11 +31,14 @@
     <!-- Content views will be inject within this fragment-->
 
 
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="76dp"
+        android:background="@color/nav_bar"
+        app:activeIndicatorLabelPadding="0dp"
+        app:elevation="0dp"
+        app:itemIconSize="0dp"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

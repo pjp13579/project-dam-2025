@@ -5,4 +5,6 @@
     <color name="grey_200">#EEEEEE</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="blue_50">#E3F2FD</color>
+    <color name="bottom_bar">#FFF</color>
+    <color name="nav_bar">#64CA63</color>
 </resources>
